@@ -1105,7 +1105,7 @@ class Executable extends Preprocessable {
           if (jumpObj.type == ARRAY) {
             if (jumpObj.a.size() > jumpBackTimes) {
               ptr = jumpBackTo;
-              push(jumpObj.a.get(jumpBackTimes).s+"");
+              push(jumpObj.a.get(jumpBackTimes));
               jumpBackTimes++;
             } else
               jumpObj = null;
