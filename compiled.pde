@@ -170,7 +170,7 @@ printArray = println;
 void setup(){size(1,1);}void launchSOGLP2() {
   try {
     if (args == null)
-      args = new String[]{"p.sogl", ""};
+      args = new String[]{"p.sogl"};
     saveDebugToFile = false;
     saveOutputToFile = false;
     logDecompressInfo = false;
@@ -214,6 +214,7 @@ void setup(){size(1,1);}void launchSOGLP2() {
       saveStrings("log.txt", o2);
     
   }
+  //System.exit(0);
 }
 void draw() {
   

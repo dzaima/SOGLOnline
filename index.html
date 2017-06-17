@@ -34,7 +34,9 @@
     <input type="button" id="saveSOGL" value="save SOGL codepage encoded file" onclick="saveSOGL();" style="width:100%"></input>
     </div>
     <div id="p">
-      <input type="file" id="fileinput"/>
+      <input type="file" id="fileinput" accept=".soglbin"/>
+      <br>
+      <a id="savedLink"></a>
     </div>
   </div>
   <script>
@@ -71,7 +73,7 @@
     }
     function saveSOGL() {
       if (!cp) cp = Processing.instances[0];
-      var link = document.createElement('a');
+      var link = document.getElementById("savedLink");
       var prog = document.getElementById("program").value;
       link.download = "encoded.soglbin";
       var progBin = "";
@@ -80,6 +82,7 @@
       }
       link.href = 'data:text/plain;base64,' + btoa(progBin);
       link.click();
+      //link.innerHTML="If the file didn't download, click here"
     }
     
     var fr;
