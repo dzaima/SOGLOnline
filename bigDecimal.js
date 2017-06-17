@@ -307,8 +307,8 @@
         return x;
     }
     
-    function setScale(dp, rm) {
-        return this.rnd(this, dp, rm, false);
+    P.setScale = function (dp, rm) {
+        return rnd(this, dp, rm, false);
     }
     /*
      * Throw a BigError.
@@ -681,7 +681,7 @@
      * Return a new Big whose value is the value of this Big modulo the
      * value of Big y.
      */
-    P.mod = function (y) {
+    P.remainder = P.mod = function (y) {
         var yGTx,
             x = this,
             Big = x.constructor,
