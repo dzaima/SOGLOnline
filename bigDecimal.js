@@ -36,7 +36,7 @@
         // The maximum magnitude of the exponent argument to the pow method.
         MAX_POWER = 1E6,           // 1 to 1000000
         ZERO = "0",
-
+        ONE = "1",
         /*
          * The exponent value at and beneath which toString returns exponential
          * notation.
@@ -104,6 +104,7 @@
         Big.E_NEG = E_NEG;
         Big.E_POS = E_POS;
         Big.ZERO = Big("0");
+        Big.ONE = Big("1");
         Big.ROUND_HALF_UP = 1;
 
         return Big;

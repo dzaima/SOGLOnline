@@ -920,7 +920,7 @@ BigDecimal[] toBase (BigDecimal base, BigDecimal b) {
     BigDecimal[] t = b.divideAndRemainder(base);
     o.add(t[1]);
     b = t[0];
-    println(b);
+    //println(b);
   }
   BigDecimal[] O = new BigDecimal[o.size()];
   for (int i = 0; i<o.size(); i++) {
@@ -2465,7 +2465,7 @@ class Executable extends Preprocessable {
               push(a.s.length() > 0? a.s.charAt(0).charCodeAt(0) : 0);
             }
             if (a.type==BIGDECIMAL) {
-              push((char)a.bd.intValue()+"");
+              push(String.fromCharCode(a.bd.intValue()));
             }
             if (a.type==ARRAY) {
               //todo
