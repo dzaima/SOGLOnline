@@ -19,15 +19,28 @@
     </div>
     <div id="right" align="right">
       <center><b>INPUTS</b></center>
-      <textarea id="inputs"placeholder="Enter inputs in each line"></textarea>
+      <textarea id="inputs" placeholder="Enter inputs in each line" style="width:100%"></textarea>
+    </div>
+    <textarea id="output" style="width: 100%; height:300px" placeholder="Output will appear here once some code has been executed" readonly></textarea>
+    <br/>
+    <div id="p" style="width:220px">
+      <button onclick="runClicked()" style="width:47%">run</button>
+      <button onclick="permalink()" style="width:47%; float:right;">permalink</button>
+    </div>
+    <br>
+    <div id="p" style="width:220px">
+      <input type="button" id="loadSOGL" value="load SOGL codepage encoded file" onclick="loadSOGL()"; style="width:100%"></input>
+      <br/>
+    <input type="button" id="saveSOGL" value="save SOGL codepage encoded file" onclick="saveSOGL();" style="width:100%"></input>
+    </div>
+    <div id="p">
+      <input type="file" id="fileinput"/>
     </div>
   </div>
-  <textarea id="output" style="width: 100%; height:300px" placeholder="Output will appear here once some code has been executed" readonly></textarea>
-  <button onclick="runClicked()">run</button>
-  <button onclick="permalink()">permalink</button>
   <script>
     var soglOS = "";
     var cp;
+    var ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’";
     var args = location.search.substring(1).split(",");
     for (var i = 0; i < args.length; i++) {
       var carg = args[i];
@@ -37,7 +50,7 @@
         document.getElementById("inputs").innerHTML = unescape(atob(carg.substring(7).replace(/_/g, "=")));
     }
     async function runClicked() {
-      cp = Processing.instances[0];
+      if (!cp) cp = Processing.instances[0];
       soglOS = "";
       var prog = document.getElementById("program").value;
       var inps = document.getElementById("inputs").value;
@@ -55,6 +68,35 @@
       if (inputs != "")
         res+= ",inputs="+ btoa(escape(inputs)).replace(/=/g, "_");
       document.getElementById("output").innerHTML = res;
+    }
+    function saveSOGL() {
+      if (!cp) cp = Processing.instances[0];
+      var link = document.createElement('a');
+      var prog = document.getElementById("program").value;
+      link.download = "encoded.soglbin";
+      var progBin = "";
+      for (var i = 0; i < prog.length; i++) {
+        progBin+= String.fromCodePoint(ALLCHARS.indexOf(prog.charAt(i)));
+      }
+      link.href = 'data:text/plain;base64,' + btoa(progBin);
+      link.click();
+    }
+    
+    var fr;
+    function loadSOGL() {
+      var f = document.getElementById('fileinput').files[0];
+      fr = new FileReader();
+      fr.onload = recieved;
+      fr.readAsBinaryString(f);
+      function recieved() {
+        if (!cp) cp = Processing.instances[0];
+        var progbin = fr.result;
+        var prog = "";
+        for (var i = 0; i < progbin.length; i++) {
+          prog+= ALLCHARS.charAt(progbin.charCodeAt(i));
+        }
+        document.getElementById("program").innerHTML = prog;
+      }
     }
     update();
   </script>

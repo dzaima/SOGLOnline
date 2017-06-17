@@ -28,6 +28,12 @@ textarea {
   zoom: 1;
   width: 25%;
 }
+#p {
+  vertical-align: top;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+}
 #right {
   float: right;
 }
