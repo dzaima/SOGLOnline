@@ -14,8 +14,8 @@
   <center><H1>SOGL interpreter</H1></center>
   <div id="all">
     <div id="left">
-      <div id="p25"><span id="bytecount" style="font-size:12px">0 bytes</span></div><div id="p50"><center><b>CODE</b></center></div>
-      <textarea id="program" placeholder="Enter code..." spellcheck="false" oninput="setTimeout(update, 1);"></textarea>
+      <div id="p" style="width:40%;"><span id="bytecount" style="font-size:12px">0 bytes</span></div><div id="p" style="width:20%;"><center><b>CODE</b></center></div>
+      <textarea id="program" placeholder="Enter code..." spellcheck="false" onclick="setTimeout(update, 1);" oninput="setTimeout(update, 1);"></textarea>
     </div>
     <div id="right" align="right">
       <center><b>INPUTS</b></center>
@@ -43,29 +43,39 @@
     var soglOS = "";
     var cp;
     var ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’";
+    var pobj = document.getElementById("program");
     var args = location.search.substring(1).split(",");
+    document.onkeydown = update;
     for (var i = 0; i < args.length; i++) {
       var carg = args[i];
       if (carg.startsWith("code="))
-        document.getElementById("program").value = unescape(atob(carg.substring(5).replace(/_/g, "=")));
+        pobj.value = unescape(atob(carg.substring(5).replace(/_/g, "=")));
       if (carg.startsWith("inputs="))
         document.getElementById("inputs").value = unescape(atob(carg.substring(7).replace(/_/g, "=")));
     }
     async function runClicked() {
       if (!cp) cp = Processing.instances[0];
       soglOS = "";
-      var prog = document.getElementById("program").value;
+      var prog = pobj.value;
       var inps = document.getElementById("inputs").value;
       cp.launchSOGL(prog, inps.split("\n"));
       document.getElementById("output").value = soglOS;
     }
+    
     function update() {
-      var bytecount = document.getElementById("program").value.length;
-      document.getElementById("bytecount").innerHTML = bytecount +" byte"+ (bytecount==1? "" : "s");
+      var bytecount = pobj.value.length;
+      var startPos = pobj.selectionStart;
+      var endPos = pobj.selectionEnd;
+      var co = bytecount +" byte"+ (bytecount==1? "" : "s");
+      if (endPos != startPos)
+        co+= " ("+ (endPos-startPos) +" byte"+ (endPos-startPos==1? "" : "s") +" selected)"
+      document.getElementById("bytecount").innerHTML = co;
+      //console.log(startPos+" "+endPos);
     }
+    
     function permalink() {
       var res = location.href.substring(0,location.href.length-location.search.length)+"?";
-      res+= "code="+ (btoa(escape(document.getElementById("program").value)).replace(/=/g, "_"));
+      res+= "code="+ (btoa(escape(pobj.value)).replace(/=/g, "_"));
       var inputs = document.getElementById("inputs").value;
       if (inputs != "")
         res+= ",inputs="+ btoa(escape(inputs)).replace(/=/g, "_");
@@ -74,7 +84,7 @@
     function saveSOGL() {
       if (!cp) cp = Processing.instances[0];
       var link = document.getElementById("savedLink");
-      var prog = document.getElementById("program").value;
+      var prog = pobj.value;
       link.download = "encoded.soglbin";
       var progBin = "";
       for (var i = 0; i < prog.length; i++) {
@@ -98,7 +108,7 @@
       for (var i = 0; i < progbin.length; i++) {
         prog+= ALLCHARS.charAt(progbin.charCodeAt(i));
       }
-      document.getElementById("program").value = prog;
+      pobj.value = prog;
       update();
     }
     update();
