@@ -1,0 +1,33 @@
+textarea {
+  overflow: auto;
+  width: 98%;
+  font-family: Consolas;
+  font-size: 10p;
+  text-align: left;
+  border-radius: 4px;
+  height: 200px;
+  background: #f8fff8;
+}
+#alls {
+  height: 100%;
+  width:100%
+  display: inline-block;
+  font-size:0;
+}
+#left, #right, #p50 {
+  vertical-align: top;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  width: 50%;
+}
+#p25 {
+  vertical-align: top;
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  width: 25%;
+}
+#right {
+  float: right;
+}

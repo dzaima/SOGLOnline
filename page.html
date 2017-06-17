@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<head>
+  <link rel="stylesheet" href="style.css">
+</head>
+<html>
+<head>
+    <title>SOGL interpreter</title>
+    <script src="processing.js"></script>
+    <script src="bigDecimal.js"></script>
+    <script src="jsAdd.js"></script>
+</head>
+<body style="background: #f5fff5;">
+  <canvas data-processing-sources="compiled.pde" height=1 width=1></canvas>
+  <center><H1>SOGL interpreter</H1></center>
+  <div id="all">
+    <div id="left">
+      <div id="p25"><span id="bytecount" style="font-size:12px">0 bytes</span></div><div id="p50"><center><b>CODE</b></center></div>
+      <textarea id="program" placeholder="Enter code..." oninput="setTimeout(update, 1);"></textarea>
+    </div>
+    <div id="right" align="right">
+      <center><b>INPUTS</b></center>
+      <textarea id="inputs"placeholder="Enter inputs in each line"></textarea>
+    </div>
+  </div>
+  <textarea id="output" style="width: 100%; height:300px" placeholder="Output will appear here once some code las been executed" readonly></textarea>
+  <button onclick="runClicked()">run</button>
+  <button onclick="permalink()">permalink</button>
+  <script>
+    var soglOS = "";
+    var cp;
+    var args = location.search.substring(1).split(",");
+    console.log(args);
+    for (var i = 0; i < args.length; i++) {
+      var carg = args[i];
+      if (carg.startsWith("code="))
+        document.getElementById("program").innerHTML = unescape(atob(carg.substring(5).replace(/_/g, "=")));
+      if (carg.startsWith("inputs="))
+        document.getElementById("inputs").innerHTML = unescape(atob(carg.substring(7).replace(/_/g, "=")));
+    }
+    async function runClicked() {
+      cp = Processing.instances[0];
+      soglOS = "";
+      var prog = document.getElementById("program").value;
+      var inps = document.getElementById("inputs").value;
+      cp.launchSOGL(prog, inps.split("\n"));
+      document.getElementById("output").innerHTML = soglOS;
+    }
+    function update() {
+      var bytecount = document.getElementById("program").value.length;
+      document.getElementById("bytecount").innerHTML = bytecount +" byte"+ (bytecount==1? "" : "s");
+    }
+    function permalink() {
+      var res = location.href.substring(0,location.href.length-location.search.length)+"?";
+      res+= "code="+ (btoa(escape(document.getElementById("program").value)).replace(/=/g, "_"));
+      var inputs = document.getElementById("inputs").value;
+      if (inputs != "")
+        res+= ",inputs="+ btoa(escape(inputs)).replace(/=/g, "_");
+      document.getElementById("output").innerHTML = res;
+    }
+    update();
+  </script>
+</body>
+</html>
