@@ -418,6 +418,9 @@ void clearOutput() throws Exception {
   savedOut = new StringList(); 
 }
 int divCeil (int a, int b) {
+  /**/
+  return ceil(a/b);
+  //*/
   return (a+b-1)/b;
 }
 
@@ -3157,6 +3160,16 @@ class Executable extends Preprocessable {
             }
           }
           
+          if (cc=="→") {
+            /**/
+            a = pop(STRING);
+            var outp = eval(a.s);
+            if (outp != undefined) {
+              push(outp);
+            }
+            //*/
+          }
+          
           if (cc=="¶") {
             push("\n");
           }
@@ -3187,7 +3200,7 @@ class Executable extends Preprocessable {
     }
     if (ao) {
       oprintln();
-      pop(STRING).print();
+      pop(STRING).print(true);
     }
     eprintln("");
   }
@@ -3201,7 +3214,7 @@ class Executable extends Preprocessable {
     Poppable popped;
     if (shouldPop) popped = pop(STRING);
     else     popped = npop(STRING);
-    popped.print();
+    popped.print(true);
     if (dao) ao = false;
     lastO=cc;
   }
@@ -3284,47 +3297,37 @@ class Poppable {
       inp = imp;
     }
   }
-  void print () {
+  void print (boolean multiline) {
     if (type==STRING) currentPrinter.oprint(s);
     if (type==BIGDECIMAL) currentPrinter.oprint(bd);
-    if (type==ARRAY) printArr();
+    if (type==ARRAY) printArr(multiline);
   }
-  void print (boolean normArr) {
-    if (type==STRING) currentPrinter.oprint(s);
-    if (type==BIGDECIMAL) currentPrinter.oprint(bd);
-    if (type==ARRAY)
-      if (normArr)
-        currentPrinter.oprint(a.toArray().toString());
-      else
-        printArr();
-  }
-  void println () {
-    if (type==STRING) currentPrinter.oprintln(s);
-    if (type==BIGDECIMAL) currentPrinter.oprintln(bd);
-    if (type==ARRAY) printArr();
-  }
-  void println (boolean normArr) {
+  void println (boolean multiline) {
     if (type==STRING) currentPrinter.oprintln(s);
     if (type==BIGDECIMAL) currentPrinter.oprintln(bd);
     if (type==ARRAY) {
-      if (normArr) {
-        currentPrinter.eprintln ("[\n");
-        for (int i = 0; i < a.size()-1; i++) {
-          a.get(i).println(true);
-          currentPrinter.eprintln(",");
-        }
-        currentPrinter.eprintln("]");
-      } else {
-        printArr();
-        println("");
-      }
+      printArr(multiline);
+      currentPrinter.oprintln("");
     }
   }
-  void printArr() {
-    for (int i = 0; i < a.size()-1; i++) {
-      a.get(i).println("");
+  void printNA () {
+    if (type==STRING) currentPrinter.oprintln(s);
+    if (type==BIGDECIMAL) currentPrinter.oprintln(bd);
+    if (type==ARRAY) {
+      currentPrinter.eprintln ("[\n");
+      for (int i = 0; i < a.size()-1; i++) {
+        a.get(i).printNA();
+        currentPrinter.eprintln(",");
+      }
+      currentPrinter.eprintln("]");
     }
-    if (a.size()>0) a.get(a.size()-1).print();
+  }
+  void printArr(boolean multiline) {
+    for (int i = 0; i < a.size()-1; i++) {
+      a.get(i).print(false);
+      if (multiline) currentPrinter.oprintln("");
+    }
+    if (a.size()>0) a.get(a.size()-1).print(false);
   }
   String sline(boolean escape) {
     String toEscape = s;
@@ -3627,6 +3630,7 @@ class Preprocessable {
   }
   //*/
   void push (Object p) {
+    //console.log(p);
     //println("PUSH "+ p +" type "+ (typeof p) +" string "+ (p instanceof Poppable));
     if (p instanceof Poppable) {
       stack.add(new Poppable(p).copy());
@@ -3645,13 +3649,18 @@ class Preprocessable {
     }
     else if (p instanceof BigDecimal) {
       push(new Poppable(p));
+    } else {
+      push(js2P(p));
     }
-    else {
-      if (typeof p[0] == "string")
-        push(new Poppable(StrtoArr(p)));
-      else
-        push(new Poppable(array2D(p)));
+  }
+  Poppable js2P(var cP) {
+    if (typeof cP == "string") return new Poppable(cP);
+    if (typeof cP == "number") return new Poppable(new BigDecimal(cP));
+    ArrayList<Poppable> cout = ea();
+    for (int i = 0; i < cP.length; i++) {
+      cout.add(js2P(cP[i]));
     }
+    return new Poppable(cout);
   }
   Poppable pop (int implicitType) {
     Poppable res;
