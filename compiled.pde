@@ -169,7 +169,7 @@ class SystemOut {
 printArray = println;
 class StringBuilder {
   String s;
-  StringBuilder(String i) {
+  StringBuilder (String i) {
     s = i;
   }
   StringBuilder reverse () {
@@ -435,6 +435,26 @@ String[] emptySA(int xs, int ys) {
 }
 String[] write(String[] a, int xp, int yp, ArrayList<Poppable> b) {
   //println("wrs");
+  if (xp < 1) {
+    String ps = "";
+    for (int i = 0; i < 1-xp; i++) {
+      ps+= " ";
+    }
+    for (int i = 0; i < a.length; i++) {
+      a[i] = ps+a[i];
+    }
+    xp=1;
+  }
+  if (yp < 1) {
+    String[] na = new String[a.length+(1-yp)];
+    for (int i = 0; i < na.length; i++) {
+      if (i < 1-yp) na[i] = "";
+      else na[i] = a[i-(1-yp)];
+    }
+    a = na;
+    a = SAspacesquared(a);
+    yp=1;
+  }
   for (int x = 0; x < getLongestXFrom(new Poppable(b)); x++) {
     for (int y = 0; y < b.size(); y++) {
       //println("\"" +a[y+yp-1]+ "\"", x+xp, y+yp-1);
@@ -3036,7 +3056,7 @@ class Executable extends Preprocessable {
             }
             if (a.type==STRING) {
               if (b.type==ARRAY) {
-                int maxlen = 0; //<>// //<>// //<>// //<>// //<>// //<>//
+                int maxlen = 0; //<>//
                 for (Poppable c : b.a) 
                   if (c.s.length()>maxlen) 
                     maxlen = c.s.length();
@@ -3786,7 +3806,7 @@ ArrayList<Poppable> spacesquared(ArrayList<Poppable> arr) {
   }
   return res;
 }
-String[] spacesquared2(String[] arr) {
+String[] SAspacesquared(String[] arr) {
   String[] res = new String[arr.length];
   int l = 0;
   for (String b : arr) {
@@ -3846,7 +3866,7 @@ Poppable vertMirror (Poppable inp) {
   inp = replaceChars(inp, ",", "\'");
   if (inp.type==STRING) {
     String[] ss = split(inp.s, "\n");
-    ss = spacesquared2(ss);
+    ss = SAspacesquared(ss);
     for (int i = 0; i < ss.length; i++) {
       for (int j = 0; j < ss[i].length(); j++) {
         if (ss[i].charAt(j)=="_") {
