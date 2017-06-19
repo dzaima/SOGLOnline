@@ -192,6 +192,7 @@ class StringBuilder {
   }
 }
 void setup(){size(1,1);}void launchSOGLP2() {
+  //println("hello...".replaceAll(".", "$0\\0"));
   try {
     if (args == null)
       args = new String[]{"p.sogl"};
@@ -1596,15 +1597,11 @@ class Executable extends Preprocessable {
                 push(res);
               }
               if ((a.type==BIGDECIMAL)&&(b.type==ARRAY)) {
-                ArrayList<Poppable> arr = ea(); 
-                for (int i = 0; i < b.a.size(); i++) {
-                  String so = b.a.get(i).s;
-                  arr.add(new Poppable(""));
-                  for (int j = 0; j < a.bd.intValue(); j++) {
-                    arr.get(i).s+=so;
-                  }
+                String rep = "";
+                for (int j = 0; j < a.bd.intValue(); j++) {
+                  rep+= "$1";
                 }
-                push(arr);
+                push(regexReplace(b, "(.)", rep));
               }
             }
           }
@@ -3943,6 +3940,14 @@ Poppable quadPalen (Poppable inp, int centerX, int centerY, boolean swapCharsX, 
   inp = horizPalen(inp, centerX, swapCharsX, false);
   inp = vertPalen(inp, centerY, swapCharsY, false);
   return inp;
+}
+Poppable regexReplace (Poppable inp, String what, String toWhat) {
+  if (inp.type==STRING||inp.type==BIGDECIMAL) return tp(inp.s.replaceAll(what, toWhat));
+  ArrayList<Poppable> out = ea();
+  for (Poppable c : inp.a) {
+    out.add(regexReplace(c, what, toWhat));
+  }
+  return tp(out);
 }
 
 
