@@ -1,4 +1,4 @@
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxx    xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxx    xx      x             x  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxx    xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx           x             x  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxx      x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxx/  /        x        /    x  x x x         x x│
@@ -192,7 +192,6 @@ class StringBuilder {
   }
 }
 void setup(){size(1,1);}void launchSOGLP2() {
-  //println("hello...".replaceAll(".", "$0\\0"));
   try {
     if (args == null)
       args = new String[]{"p.sogl"};
@@ -1742,7 +1741,23 @@ class Executable extends Preprocessable {
             setvar(cv, pop(STRING));
           }
           if (cc=="F") {
-            
+            try {
+              int cptr = ptr;
+              int lvl = 1;
+              while (lvl != 0) {
+                cptr--;
+                if (ldata[cptr]!= 0) {
+                  if (p.charAt(cptr) == "}") lvl++;
+                  else lvl--;
+                }
+              }
+              Poppable out = data[cptr];
+              if (out.type==BIGDECIMAL) out = tp(B(dataL[cptr]+1));
+              if (out.type==STRING) out = tp(out.s.charAt(0)+"");
+              if (out.type==ARRAY) out = out.a.get(0);
+              push(out);
+            } catch (Exception e) {
+            }
           }
           if (cc=="G") {
             a = pop(BIGDECIMAL);
@@ -2001,6 +2016,24 @@ class Executable extends Preprocessable {
             push(new Poppable (vars[cv], cv, this));
           }
           
+          if (cc=="f") {
+            try {
+              int cptr = ptr;
+              int lvl = 1;
+              while (lvl != 0) {
+                cptr--;
+                if (ldata[cptr]!= 0) {
+                  if (p.charAt(cptr) == "}") lvl++;
+                  else lvl--;
+                }
+              }
+              Poppable out = data[cptr];
+              if (out.type==BIGDECIMAL) out = tp(B(dataL[cptr]));
+              push(out);
+            } catch (Exception e) {
+            }
+          }
+          
           if (cc=="h") {
             a = pop(STRING);
             b = pop();
@@ -2196,7 +2229,6 @@ class Executable extends Preprocessable {
               if (a.s.length()>0) {
                 push(a.s.charAt(0)+"");
                 data[ptr] = a;//parseJSONObject("{\"S\":\""+(a.s.substring(1))+"\",\"T\":2,\"L\":\"0\"}");//3-number, 2-string
-                a.s = a.s.substring(1);
                 dataL[ptr] = 0;
               } else
                 ptr = ldata[ptr];
@@ -2204,7 +2236,6 @@ class Executable extends Preprocessable {
             if (a.type==ARRAY) {
               if (a.a.size()>0) {
                 push(a.a.get(0));
-                a.a.remove(0);
                 data[ptr] = a;//parseJSONObject("{\"T\":4,\"L\":\"0\"}");//3-number, 2-string, 4-array
                 dataL[ptr] = 0;
                 //dataA[ptr] = a;
@@ -2216,12 +2247,14 @@ class Executable extends Preprocessable {
           if (cc=="∫") {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL) {
+              if (a.bd.equals(B(0))) {
+                ptr = ldata[ptr];
+              } else {
+                push(B(1));
+              }
               data[ptr] = a;//parseJSONObject("{\"N\":\""+a.s+"\",\"T\":3,\"L\":\"0\"}");//3-number, 2-string
               dataL[ptr] = 0;
-              if (a.bd.intValue()>=1) {
-                push(B(1));
-              } else
-                ptr = ldata[ptr];
+              //eprintln(data[ptr].toString());
             }
           }
           if (cc=="}") {
@@ -2243,31 +2276,30 @@ class Executable extends Preprocessable {
                   //eprintln(data[ptr].N);
                 }
               } else if (data[ldata[ptr]].type==STRING) {
-                if (data[ldata[ptr]].s.length()>0) {
+                if (data[ldata[ptr]].s.length()>1) {
                   ptr = ldata[ptr];
-                  String s = data[ptr].s;
-                  data[ptr].s = s.substring(1);//parseJSONObject("{\"S\":\""+(s.substring(1))+"\",\"T\":2,\"L\":\""+B(data[ptr].L).add(B(1))+"\"}");
+                  data[ptr].s = data[ptr].s.substring(1);//parseJSONObject("{\"S\":\""+(s.substring(1))+"\",\"T\":2,\"L\":\""+B(data[ptr].L).add(B(1))+"\"}");
+                  push(data[ptr].s.charAt(0)+"");
                   dataL[ptr]++;
-                  push(s.charAt(0)+"");
                 }
               } else if (data[ldata[ptr]].type==ARRAY) {
-                if (data[ldata[ptr]].a.size()>0) {
+                if (data[ldata[ptr]].a.size()>1) {
                   ptr = ldata[ptr];
                   Poppable A = data[ptr];
-                  push(A.a.get(0));
                   A.a.remove(0);
+                  push(A.a.get(0));
                   dataL[ptr]++;// = parseJSONObject("{\"T\":4,\"L\":\""+B(data[ptr].L).add(B(1))+"\"}");
                   data[ptr] = A;
                 }
               }
             } else if (p.charAt(ldata[ptr])=="∫") {
               if (data[ldata[ptr]].type==BIGDECIMAL) {
-                if (data[ldata[ptr]].bd.intValue()>1) {
+                if (!(data[ldata[ptr]].bd.intValue()<=1)) {
                   ptr = ldata[ptr];
-                  data[ptr].bd = data[ptr].bd.subtract(B(1));//parseJSONObject("{\"N\":\""+B(data[ptr].N).subtract(B(1))+"\",\"T\":3,\"L\":\""+B(data[ptr].L).add(B(1))+"\"}");
+                  data[ptr].bd = data[ptr].bd.subtract(B(1));//parseJSONObject("{\"N\":\""+B(data[ptr].N).subtract(B(1)).toString()+"\",\"T\":3,\"L\":\""+B(data[ptr].L).add(B(1))+"\"}");
                   dataL[ptr]++;
                   push(dataL[ptr]+1);
-                  //oprintln(data[ptr].N);
+                  //eprintln(data[ptr].N);
                 }
               }
             }
@@ -3442,7 +3474,7 @@ class Preprocessable {
      3 - string
      4 - compressed ender
      LDATA: (loop/if data)
-     "{", "?", "F", "[", "]" - ending pointer
+     "{", "?", "[", "]", "∫", "‽", "⌠" - ending pointer
      "}" - starting pointer (for loops)
      */
     //for (int i = 0; i < p.length(); i++) if (p.charAt(i)=="→") CT = true;
@@ -3524,7 +3556,7 @@ class Preprocessable {
       }
       while (i<sdata.length && sdata[i]!=0) i++;
       if (i>sdata.length-1) break;
-      if ("{?[]F∫‽⌠".contains(p.charAt(i)+"")) {
+      if ("{?[]∫‽⌠".contains(p.charAt(i)+"")) {
         loopStack.append(i);
       }
       if (p.charAt(i)=="}"|p.charAt(i)=="←") {
