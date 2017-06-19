@@ -1,4 +1,4 @@
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxx    xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxx    xx      x             x  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxx    xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx           x             x  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxx      x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxx/  /        x        /    x  x x x         x x│
@@ -167,6 +167,30 @@ class SystemOut {
   }
 }
 printArray = println;
+class StringBuilder {
+  String s;
+  StringBuilder(String i) {
+    s = i;
+  }
+  StringBuilder reverse () {
+    String ns = "";
+    for (int i = s.length()-1; i >= 0; i--) { 
+      ns += s.charAt(i);
+    }
+    s = ns;
+    return this;
+  }
+  String toString() {
+    return s;
+  }
+  StringBuilder substring(int i, int j) {
+    if (j==undefined)
+      s = s.substring(i);
+    else 
+      s = s.substring(i, j);
+    return this;
+  }
+}
 void setup(){size(1,1);}void launchSOGLP2() {
   try {
     if (args == null)
@@ -214,7 +238,7 @@ void setup(){size(1,1);}void launchSOGLP2() {
       saveStrings("log.txt", o2);
     
   }
-  //System.exit(0);
+  System.exit(0);
 }
 void draw() {
   
@@ -286,15 +310,24 @@ String up0 (int num, int a) {
 }
 Poppable toArray (Poppable p) {
   if (p.type==STRING || p.type==BIGDECIMAL) {
-    return StrtoArr(p.s.split("\n"));
+    return SA2PA(p.s.split("\n"));
   }
   return p;
 }
-Poppable StrtoArr (String[] arr) {
+Poppable SA2PA (String[] arr) {//string array to poppable array
   ArrayList<Poppable> o = new ArrayList<Poppable>();
   for (String s : arr)
     o.add(tp(s));
   return new Poppable(o);
+}
+String[] PA2SA (Poppable arr) {//poppable array to string array
+  String[] sa = new String[arr.a.size()];
+  int i = 0;
+  for (Poppable c : arr.a) {
+    sa[i] = c.toString();
+    i++;
+  }
+  return sa;
 }
 Poppable array2D (String[][] arr) {
   ArrayList<Poppable> o = new ArrayList<Poppable>();
@@ -1233,7 +1266,8 @@ class Executable extends Preprocessable {
             
           }
           if (qdata[ptr]==32) {
-            
+            a = pop(STRING);
+            push(quadPalen(a, 1, 1, true, true, true));
           }
           ptr+= quirks[qdata[ptr]].length()-1;
         } else {
@@ -2042,7 +2076,7 @@ class Executable extends Preprocessable {
               //println(part+"h");
               if (part.length()>0)
                 splat[splat.length-1] = part + a.s.substring(0, b.bd.intValue()-part.length());
-              push (StrtoArr(splat));
+              push (SA2PA(splat));
             }
             if (a.type==ARRAY) {
               ArrayList<Poppable> out = new ArrayList<Poppable>();
@@ -2393,12 +2427,14 @@ class Executable extends Preprocessable {
           
           if (cc=="╥") {
             a = npop(STRING);
+            push(horizPalen(a, 1, false, true));
+            /*a = npop(STRING);
             if (a.type==BIGDECIMAL)a=new Poppable(a.toString());
             String s = a.s;
             for (int i = s.length()-2; i > -1; i--) {
               s+=s.charAt(i);
             }
-            push(s);
+            push(s);*/
           }
           
           if (cc=="╤") {
@@ -2416,14 +2452,8 @@ class Executable extends Preprocessable {
           
           if (cc=="Γ") {
             a = pop(STRING);
-            if (a.type == STRING) {
-              String[] split = a.s.split("\n");
-              split = spacesquared2(split);
-              for (int i = 0; i < split.length; i++) {
-                split[i] = split[i] + reverseChars(split[i], true).substring(1);
-              }
-              push (join(split,"\n"));
-            }
+            if (a.type==STRING) a = SA2PA(a.s.split("\n"));
+            push (horizPalen(a, 1, true, true));
           }
           
           if (cc=="Δ") {
@@ -2565,7 +2595,7 @@ class Executable extends Preprocessable {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL) {
               ArrayList<Poppable> out = ea();
-              for (BigDecimal i = B(1); i.compareTo(a.bd)!=1; i = i.add(B(1))) //<>// //<>// //<>// //<>// //<>//
+              for (BigDecimal i = B(1); i.compareTo(a.bd)!=1; i = i.add(B(1))) //<>// //<>// //<>// //<>// //<>// //<>//
                 if (a.bd.divideAndRemainder(i)[1].equals(B(0)))
                   out.add(new Poppable(i));
               push(out);
@@ -2954,51 +2984,12 @@ class Executable extends Preprocessable {
           }
           if (cc=="↔") {
             a = pop(STRING);
-            a = swapChars(a, "\\", "/");
-            a = swapChars(a, "<", ">");
-            a = swapChars(a, "(", ")");
-            a = swapChars(a, "{", "}");
-            a = swapChars(a, "[", "]");
-            push(a);
+            push(horizMirror(a));
             //a = swapChars(a, '', '');
           }
           if (cc=="↕") {
             a = pop(STRING);
-            a = swapChars(a, "\\", "/");
-            a = swapChars(a, "^", "V");
-            a = swapChars(a, "\'", ".");
-            a = swapChars(a, "{", "}");
-            a = swapChars(a, "[", "]");
-            if (a.type==STRING) {
-              String[] ss = split(a.s, "\n");
-              ss = spacesquared2(ss);
-              for (int i = 0; i < ss.length; i++) {
-                ss[i] = ss[i].replace("`", ".");
-                for (int j = 0; j < ss[i].length(); j++) {
-                  if (ss[i].charAt(j)=="_") {
-                    if (i > 0 && ss[i-1].charAt(j)==" ")
-                      ss[i-1] = ss[i-1].substring(0,j)+"_"+ss[i-1].substring(j+1);
-                    ss[i] = ss[i].substring(0,j)+" "+ss[i].substring(j+1);
-                  }
-                }
-              }
-            }
-            if (a.type==ARRAY) {
-              ArrayList<Poppable> out = a.a;
-              out = spacesquared(out);
-              for (int i = 0; i < out.size(); i++) {
-                out.set(i, tp(out.get(i).s.replace("`", ".")));
-                for (int j = 0; j < out.get(i).s.length(); j++) {
-                  if (out.get(i).s.charAt(j)=="_") {
-                    if (i > 0 && out.get(i-1).s.charAt(j)==" ")
-                      out.set(i-1, tp(out.get(i-1).s.substring(0,j)+"_"+out.get(i-1).s.substring(j+1)));
-                    out.set(i, tp(out.get(i).s.substring(0,j)+" "+out.get(i).s.substring(j+1)));
-                  }
-                }
-              }
-              a.a = out;
-            }
-            push(a);
+            push(vertMirror(a));
           }
           if (cc=="∆") {
             push(-1);
@@ -3045,7 +3036,7 @@ class Executable extends Preprocessable {
             }
             if (a.type==STRING) {
               if (b.type==ARRAY) {
-                int maxlen = 0; //<>// //<>// //<>// //<>// //<>//
+                int maxlen = 0; //<>// //<>// //<>// //<>// //<>// //<>//
                 for (Poppable c : b.a) 
                   if (c.s.length()>maxlen) 
                     maxlen = c.s.length();
@@ -3376,7 +3367,7 @@ class Poppable {
 }
 
 String quirkLetters = " 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-String[] quirks = {"0*0/","1*1/","2*2/","3*3/","4*4/","5*5/","6*6/","7*7/","8*8/","9*9/","0/0*","1/1*","2/2*","3/3*","4/4*","5/5*","6/6*","7/7*","8/8*","9/9*","UU","uu","SU","Su","US","uS","!?","²²","!!","2÷","╥╥","╥╤","ΓΓ"};
+String[] quirks = {"0*0/","1*1/","2*2/","3*3/","4*4/","5*5/","6*6/","7*7/","8*8/","9*9/","0/0*","1/1*","2/2*","3/3*","4/4*","5/5*","6/6*","7/7*","8/8*","9/9*","UU","uu","SU","Su","US","uS","!?","²²","!!","2÷","╥╥","╥╤","ΓΓ","╥Γ"};
 class Preprocessable {
   ArrayList<Poppable> stack = new ArrayList<Poppable>();
   //ArrayList<Poppable> usedInputs = new ArrayList<Poppable>();
@@ -3620,7 +3611,7 @@ class Preprocessable {
     push(new Poppable(a));
   }
   void push (String[] a) {
-    push(new Poppable(StrtoArr(a)));
+    push(new Poppable(SA2PA(a)));
   }
   void push (boolean b) {
     push(new Poppable(B(b?"1":"0")));
@@ -3809,37 +3800,129 @@ String[] spacesquared2(String[] arr) {
   }
   return res;
 }
-String reverseChars(String s, boolean reverse) {
-  String res = "";
-  int j = 0;
-  if (reverse)
-    j = s.length()-1;
-  String swapChars = "/\\[](){}<>";
-  for (int i = 0; i < s.length(); i++) {
-    int index = swapChars.indexOf(s.charAt(j));
-    if (index == -1)
-      res += s.charAt(j);
-    else
-      res += swapChars.charAt(index ^ 1);
-    j+= reverse? -1 : 1;
-  }
-  return res;
-}
 Poppable swapChars (Poppable p, char a, char b) {
   if (p.type==STRING) {
     String o = "";
-    for (char s : p.s.toCharArray()) {
+    for (char s : p.s.toCharArray()) {s=String.fromCharCode(s);
       if (s==a) o+= b; else
       if (s==b) o+= a; else
       o+=s;
     }
     return tp(o);
   }
+  if (p.type==BIGDECIMAL) return p;
   ArrayList<Poppable> out = ea();
   for (Poppable c : p.a) {
     out.add(swapChars(c, a, b));
   }
   return tp(out);
+}
+
+Poppable replaceChars (Poppable p, char a, char b) {
+  if (p.type==STRING) {
+    return tp(p.s.replace(a,b));
+  }
+  if (p.type==BIGDECIMAL) return p;
+  ArrayList<Poppable> out = ea();
+  for (Poppable c : p.a) {
+    out.add(swapChars(c, a, b));
+  }
+  return tp(out);
+}
+
+Poppable horizMirror (Poppable inp) {
+  inp = swapChars(inp, "\\", "/");
+  inp = swapChars(inp, "<", ">");
+  inp = swapChars(inp, "(", ")");
+  inp = swapChars(inp, "{", "}");
+  inp = swapChars(inp, "[", "]");
+  return inp;
+}
+Poppable vertMirror (Poppable inp) {
+  inp = swapChars(inp, "\\", "/");
+  inp = swapChars(inp, "^", "v");
+  inp = swapChars(inp, "\'", ".");
+  inp = replaceChars(inp, "`", ".");
+  inp = replaceChars(inp, ",", "\'");
+  if (inp.type==STRING) {
+    String[] ss = split(inp.s, "\n");
+    ss = spacesquared2(ss);
+    for (int i = 0; i < ss.length; i++) {
+      for (int j = 0; j < ss[i].length(); j++) {
+        if (ss[i].charAt(j)=="_") {
+          if (i > 0 && (".,'` ".indexOf(ss[i-1].charAt(j))>=0))
+            ss[i-1] = ss[i-1].substring(0,j)+"_"+ss[i-1].substring(j+1);
+          ss[i] = ss[i].substring(0,j)+" "+ss[i].substring(j+1);
+        }
+      }
+    }
+  }
+  if (inp.type==ARRAY) {
+    ArrayList<Poppable> out = inp.a;
+    out = spacesquared(out);
+    for (int i = 0; i < out.size(); i++) {
+      out.set(i, tp(out.get(i).s.replace("`", ".")));
+      for (int j = 0; j < out.get(i).s.length(); j++) {
+        if (out.get(i).s.charAt(j)=="_") {
+          if (i > 0 && (".,'` ".indexOf(out.get(i-1).s.charAt(j))>=0))
+            out.set(i-1, tp(out.get(i-1).s.substring(0,j)+"_"+out.get(i-1).s.substring(j+1)));
+          out.set(i, tp(out.get(i).s.substring(0,j)+" "+out.get(i).s.substring(j+1)));
+        }
+      }
+    }
+    inp.a = out;
+  }
+  return inp;
+}
+Poppable horizPalen (Poppable inp, int center, boolean swapChars, boolean extraSpace) {
+  if (inp.type==STRING) {
+    return horizPalen(SA2PA(inp.s.split("\n")), center, swapChars, extraSpace);
+  }
+  if (inp.type==BIGDECIMAL) return tp(B(inp.s+(new StringBuilder(inp.s).reverse().substring(center%2))));
+  if (inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
+  ArrayList<Poppable> out = ea();
+  for (Poppable c : inp.a) {
+    out.add(horizPalenNS(c, center, swapChars, extraSpace));
+  }
+  return tp(out);
+}
+Poppable horizPalenNS (Poppable inp, int center, boolean swapChars, boolean extraSpace) {//non-string version
+  if (inp.type==STRING) {
+    return tp(inp.s+(new StringBuilder(swapChars? horizMirror(inp).s : inp.s).reverse().substring(center%2)));
+  }
+  if (inp.type==BIGDECIMAL) return tp(B(inp.s+(new StringBuilder(inp.s).reverse().substring(center%2))));
+  if (inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
+  ArrayList<Poppable> out = ea();
+  for (Poppable c : inp.a) {
+    out.add(horizPalenNS(c, center, swapChars, extraSpace));
+  }
+  return tp(out);
+}
+Poppable vertPalen (Poppable inp, int center, boolean swapChars, boolean extraSpace) {//vertically palendromize non-string
+  if (inp.type==STRING) {
+    return vertPalen(SA2PA(inp.s.split("\n")), center, swapChars, extraSpace);
+  }
+  if (inp.type==BIGDECIMAL) return inp;
+  if (inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
+  ArrayList<Poppable> out = ea();
+  int ssize = inp.a.size();
+  for (int i = ssize-1-center%2; i >= 0; i--) {
+    out.add(inp.a.get(i));
+  }
+  if (swapChars) out = vertMirror(tp(out)).a;
+  for (int i = 0; i < ssize; i++) {
+    if (i==ssize-1 && inp.a.get(i).type == STRING)
+      out.add(i, tp(inp.a.get(i).s.replaceAll("[,.`']", ":")));
+    else
+      out.add(i, inp.a.get(i));
+  }
+  return tp(out);
+}
+Poppable quadPalen (Poppable inp, int centerX, int centerY, boolean swapCharsX, boolean swapCharsY, boolean extraSpace) {
+  if (extraSpace && inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
+  inp = horizPalen(inp, centerX, swapCharsX, false);
+  inp = vertPalen(inp, centerY, swapCharsY, false);
+  return inp;
 }
 
 
