@@ -1641,7 +1641,7 @@ class Executable extends Preprocessable {
               a=pop(BIGDECIMAL);
               push(a);
               push(b);
-              push(a.bd.multiply(a.bd));
+              push(a.bd.multiply(b.bd));
             } else {
               a = pop();
               if (stack.size()==0) {
