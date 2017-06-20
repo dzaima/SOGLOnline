@@ -2136,8 +2136,7 @@ class Executable extends Preprocessable {
                 push(""); 
               else
                 push (a.s.substring(0, a.s.length()-1));
-            }
-            if (a.type==BIGDECIMAL) {
+            } else if (a.type==BIGDECIMAL) {
               push (B(sin(a.bd.floatValue()*PI/180)));
             } else {
               a.a.remove(a.a.size()-1);
