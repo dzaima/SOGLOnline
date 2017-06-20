@@ -1141,7 +1141,12 @@
         return this.sub(inp).toString().startsWith("-")? -1 : 1;
     }
     // Export
-
+    P.toBigInteger = function () {
+        return this;
+    }
+    P.toBigDecimal = function () {
+        return this;
+    }
 
     Big = bigFactory();
 
