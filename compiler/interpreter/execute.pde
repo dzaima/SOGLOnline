@@ -1063,9 +1063,17 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='r') {
-            a=pop();
-            if (a.type==STRING) push(B(a.s));
-            if (a.type==BIGDECIMAL) push(a.bd.toString());
+            a = pop(STRING);
+            push (vectorize(a,
+              new Vo(){
+                Poppable e(Poppable p) {
+                  if (p.type!=ARRAY) {
+                    if (p.type==STRING) return tp(B(p.s));
+                    if (p.type==BIGDECIMAL) return tp(p.bd.toString());
+                  }
+                  return null;
+                }
+            }));
           }
   
           if (cc=='t') {
