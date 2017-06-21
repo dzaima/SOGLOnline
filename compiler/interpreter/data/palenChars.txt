@@ -1,0 +1,254 @@
+ Stuff for ╬
+ horizontal palendromization:
+ overlap  swap chars  pad
+⁰   0         0        0          000
+¹   0         0        1          001
+²   0         1        0          010
+³   0         1        1          011
+⁴   1         0        0          100
+⁵   1         0        1          101
+⁶   1         1        0          110
+⁷   1         1        1          111
+ vertical palendromization:
+ overlap  swap chars  pad
+⁸   0         0        0          000
+⁹   0         0        1          001
+±   0         1        0          010
+∑   0         1        1          011
+«   1         0        0          100
+»   1         0        1          101
+æ   1         1        0          110
+Æ   1         1        1          111
+ quad palendromization:
+ X overlap  Y overlap  X mirrorChars  Y mirrorChars  pad
+ø    0          0            0              0         0          00000
+‽    0          0            0              0         1          00001
+§    0          0            0              1         0          00010
+°    0          0            0              1         1          00011
+¦    0          0            1              0         0          00100
+‚    0          0            1              0         1          00101
+‛    0          0            1              1         0          00110
+¡    0          0            1              1         1          00111
+¤    0          1            0              0         0          01000
+№    0          1            0              0         1          01001
+℮    0          1            0              1         0          01010
+½    0          1            0              1         1          01011
+←    0          1            1              0         0          01100
+!    0          1            1              0         1          01101
+"    0          1            1              1         0          01110
+#    0          1            1              1         1          01111
+$    1          0            0              0         0          10000
+%    1          0            0              0         1          10001
+&    1          0            0              1         0          10010
+'    1          0            0              1         1          10011
+(    1          0            1              0         0          10100
+)    1          0            1              0         1          10101
+*    1          0            1              1         0          10110
++    1          0            1              1         1          10111
+,    1          1            0              0         0          11000
+-    1          1            0              0         1          11001
+.    1          1            0              1         0          11010
+/    1          1            0              1         1          11011
+0    1          1            1              0         0          11100
+1    1          1            1              0         1          11101
+2    1          1            1              1         0          11110
+3    1          1            1              1         1          11111
+ other stuff:
+4 append horizontally, overlapping one char
+5 like ž, but doesn't override with spaces
+6 like ž, but doesn't override with tildes
+7 pad with spaces, reverse and swap chars
+8 overlap (like the 5 here, but with coords set to 1;1)
+9 reverse in both ways, mirroring X
+: reverse in both ways, mirroring Y
+; reverse in both ways, mirroring X & Y
+< 
+= 
+> 
+? 
+@ 
+A 
+B 
+C 
+D 
+E 
+F 
+G 
+H 
+I 
+J 
+K 
+L 
+M 
+N 
+O 
+P 
+Q 
+R 
+S 
+T 
+U 
+V 
+W 
+X 
+Y 
+Z 
+[ 
+\ 
+] 
+^ 
+_ 
+` 
+a 
+b 
+c 
+d 
+e 
+f 
+g 
+h 
+i 
+j 
+k 
+l 
+m 
+n 
+o 
+p 
+q 
+r 
+s 
+t 
+u 
+v 
+w 
+x 
+y 
+z 
+{ 
+| 
+} 
+~ 
+↑ 
+↓ 
+≠ 
+≤ 
+≥ 
+∞ 
+√ 
+═ 
+║ 
+─ 
+│ 
+≡ 
+∙ 
+∫ 
+○ 
+׀  
+′
+¬ 
+⁽ 
+⁾ 
+⅟ 
+‰ 
+÷ 
+╤ 
+╥ 
+ƨ 
+Ƨ 
+α 
+Β 
+β 
+Γ 
+γ 
+Δ 
+δ 
+Ε 
+ε 
+Ζ 
+ζ 
+Η 
+η 
+Θ 
+θ 
+Ι 
+ι 
+Κ 
+κ 
+Λ 
+λ 
+Μ 
+μ 
+Ν 
+ν 
+Ξ 
+ξ 
+Ο 
+ο 
+Π 
+π 
+Ρ 
+ρ 
+Σ 
+σ 
+Τ 
+τ 
+Υ 
+υ 
+Φ 
+φ 
+Χ 
+χ 
+Ψ 
+ψ 
+Ω 
+ω 
+ā 
+č 
+ē 
+ģ 
+ī 
+ķ 
+ļ 
+ņ 
+ō 
+ŗ 
+š 
+ū 
+ž 
+¼ 
+¾ 
+⅓ 
+⅔ 
+⅛ 
+⅜ 
+⅝ 
+⅞ 
+↔ 
+↕ 
+∆ 
+≈ 
+┌ 
+┐ 
+└ 
+┘ 
+╬ 
+┼ 
+╔ 
+╗ 
+╚ 
+╝ 
+░ 
+▒ 
+▓ 
+█ 
+▲ 
+► 
+▼ 
+◄ 
+■ 
+□ 
+… 
+‼ 
+⌠ 
+⌡ 
