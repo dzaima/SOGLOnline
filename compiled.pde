@@ -4047,6 +4047,18 @@ Poppable horizMirror (Poppable inp) {
   inp = swapChars(inp, "(", ")");
   inp = swapChars(inp, "{", "}");
   inp = swapChars(inp, "[", "]");
+  inp = swapChars(inp, "┌", "┐");
+  inp = swapChars(inp, "└", "┘");
+  inp = swapChars(inp, "├", "┤");
+  inp = swapChars(inp, "╒", "╕");
+  inp = swapChars(inp, "╓", "╖");
+  inp = swapChars(inp, "╔", "╗");
+  inp = swapChars(inp, "╙", "╜");
+  inp = swapChars(inp, "╚", "╝");
+  inp = swapChars(inp, "╘", "╛");
+  inp = swapChars(inp, "╞", "╡");
+  inp = swapChars(inp, "╟", "╢");
+  inp = swapChars(inp, "╠", "╣");
   return inp;
 }
 Poppable vertMirror (Poppable inp) {
@@ -4055,6 +4067,18 @@ Poppable vertMirror (Poppable inp) {
   inp = swapChars(inp, "^", "v");
   inp = swapChars(inp, "\'", ".");
   inp = swapChars(inp, "`", ",");
+  inp = swapChars(inp, "└", "┌");
+  inp = swapChars(inp, "┘", "┐");
+  inp = swapChars(inp, "┴", "┬");
+  inp = swapChars(inp, "╘", "╒");
+  inp = swapChars(inp, "╙", "╓");
+  inp = swapChars(inp, "╚", "╔");
+  inp = swapChars(inp, "╝", "╗");
+  inp = swapChars(inp, "╛", "╕");
+  inp = swapChars(inp, "╜", "╖");
+  inp = swapChars(inp, "╩", "╦");
+  inp = swapChars(inp, "╨", "╥");
+  inp = swapChars(inp, "╧", "╤");
   if (inp.type==STRING) {
     String[] ss = split(inp.s, "\n");
     ss = SAspacesquared(ss);
