@@ -1,7 +1,7 @@
 textarea {
   overflow: auto;
   width: 98%;
-  font-family: Consolas;
+  font-family: Consolas, DejaVu Sans Mono, Monaco, Lucida Console, Liberation Mono, Bitstream Vera Sans Mono, Courier New, monospace;
   font-size: 10p;
   text-align: left;
   border-radius: 4px;
