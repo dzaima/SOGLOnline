@@ -53,7 +53,7 @@
       if (carg.startsWith("inputs="))
         document.getElementById("inputs").value = unescape(atob(carg.substring(7).replace(/_/g, "=")));
     }
-    async function runClicked() {
+    function runClicked() {
       if (!cp) cp = Processing.instances[0];
       soglOS = "";
       var prog = pobj.value;
