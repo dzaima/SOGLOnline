@@ -15,10 +15,32 @@ void launchSOGL(String program, String[] inputs) {
     if (soglOS.charAt(soglOS.length()-1)=="\n")
       soglOS = soglOS.substring(0, soglOS.length()-1);
     console.log("escaped output: \""+(soglOS.replace("\\","\\\\").replace("\"","\\\"").replace("\n", "\\n"))+"\"");
-  }catch(Exception e){e.printStackTrace();}
+  } catch(Exception e){e.printStackTrace();}
 }
 
-
+/*
+boolean loaded = false;
+String lfCont = "";
+void loadFile (String dir) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'example.com');
+  xhr.onreadystatechange = function() {
+    lfCont = xhr.responseText;
+    
+  }
+  xhr.send();
+}
+function loadFile (String dir) {
+  var quote;
+ 
+  return new Promise(function(resolve, reject) {
+    request('http://ron-swanson-quotes.herokuapp.com/v2/quotes', function(error, response, body) {
+      quote = body;
+ 
+      resolve(quote);
+    });
+  });
+}*/
 
 Big.DP = precision;
 Big.RM = 1;

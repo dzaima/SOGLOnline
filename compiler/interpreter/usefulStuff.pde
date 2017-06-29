@@ -218,8 +218,8 @@ Poppable reverseStrings (Poppable inp) {
   }
   return tp(out);
 }
-interface Vo {
-  Poppable e(Poppable inp);
+public class Vo {
+  public Poppable e(Poppable inp){return null;}public Vo s(String a, String b){return this;}
 }
 Poppable vectorize (Poppable inp, Vo rn) {
   Poppable ce = rn.e(inp);

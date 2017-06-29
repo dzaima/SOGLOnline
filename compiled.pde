@@ -54,10 +54,32 @@ void launchSOGL(String program, String[] inputs) {
     if (soglOS.charAt(soglOS.length()-1)=="\n")
       soglOS = soglOS.substring(0, soglOS.length()-1);
     console.log("escaped output: \""+(soglOS.replace("\\","\\\\").replace("\"","\\\"").replace("\n", "\\n"))+"\"");
-  }catch(Exception e){e.printStackTrace();}
+  } catch(Exception e){e.printStackTrace();}
 }
 
-
+/*
+boolean loaded = false;
+String lfCont = "";
+void loadFile (String dir) {
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', 'example.com');
+  xhr.onreadystatechange = function() {
+    lfCont = xhr.responseText;
+    
+  }
+  xhr.send();
+}
+function loadFile (String dir) {
+  var quote;
+ 
+  return new Promise(function(resolve, reject) {
+    request('http://ron-swanson-quotes.herokuapp.com/v2/quotes', function(error, response, body) {
+      quote = body;
+ 
+      resolve(quote);
+    });
+  });
+}*/
 
 Big.DP = precision;
 Big.RM = 1;
@@ -2258,8 +2280,8 @@ class Executable extends Preprocessable {
           if (cc=="r") {
             a = pop(STRING);
             push (vectorize(a,
-              new Vo(){
-                Poppable e(Poppable p) {
+              new Vo() {
+                public Poppable e(Poppable p) {
                   if (p.type!=ARRAY) {
                     if (p.type==STRING) return tp(B(p.s));
                     if (p.type==BIGDECIMAL) return tp(p.bd.toString());
@@ -2499,6 +2521,19 @@ class Executable extends Preprocessable {
           if (cc=="│") {
             b = pop(BIGDECIMAL);
             a = pop(ARRAY);
+            if (a.type == BIGDECIMAL) {
+              ArrayList<Poppable> na = new ArrayList<Poppable>();
+              for (char c : a.bd.toString().toCharArray())
+                na.add(tp(B(c+"")));
+              a = tp(na);
+            }
+            if (a.type == STRING) {
+              String digits = "0123456789abcdefghtijklmnopqrstuvwxyz";
+              ArrayList<Poppable> na = new ArrayList<Poppable>();
+              for (char c : a.s.toLowerCase().toCharArray())
+                na.add(tp(B(digits.indexOf(c))));
+              a = tp(na);
+            }
             BigDecimal res = B(0);
             for (Poppable c : a.a) {
               res = res.multiply(b.tobd()).add(c.tobd());
@@ -2610,6 +2645,39 @@ class Executable extends Preprocessable {
           if (cc=="Ƨ") {
             ptr+= 2;
             push(p.charAt(ptr-1)+""+p.charAt(ptr));
+          }
+          
+          if (cc=="β") {
+            Poppable c = pop(STRING);
+            b = pop(STRING);
+            a = pop(STRING);
+            push (vectorize(a,
+              new Vo(){
+                String what,toWhat;
+                /*
+                public Vo s (String ai, String bi){
+                  what = ai;
+                  toWhat = bi;
+                  return this;
+                }
+                //*/
+                public Poppable e(Poppable p) {
+                  /**/
+                  what=b.s;
+                  toWhat=c.s;
+                  //*/
+                  if (p.type!=ARRAY) {
+                    for (int i = 0; i < p.s.length(); i++) {
+                      if (((i==0? "?" : p.s.charAt(i-1)+"")+p.s.charAt(i)).match(new RegExp("\\W\\w"))!=null) {
+                        p.s = p.s.replaceAll(what, toWhat);
+                      }
+                    }
+                    return tp(p.s);
+                  }
+                  return null;
+                }
+            }/*.s(b.s, c.s)//*/
+            ));
           }
           
           if (cc=="Γ") {
@@ -3089,7 +3157,7 @@ class Executable extends Preprocessable {
             a = pop(STRING);
             push (vectorize(a,
               new Vo(){
-                Poppable e(Poppable p) {
+                public Poppable e(Poppable p) {
                   if (p.type!=ARRAY) {
                     for (int i = 0; i < p.s.length(); i++) {
                       if (((i==0? "?" : p.s.charAt(i-1)+"")+p.s.charAt(i)).match(new RegExp("\\W\\w"))!=null) {
@@ -3132,6 +3200,18 @@ class Executable extends Preprocessable {
             if (a.type==BIGDECIMAL)
               push (a.bd.multiply(B(3)).divide(B(4)));
           }
+          
+          if (cc=="⅓") {
+            /*
+            a = pop(STRING);
+            loadFile(a.s);
+            while (!fLoaded) {
+              push(lfCont);
+              fLoaded = false;
+            }
+            */
+          }
+          
           if (cc=="↔") {
             a = pop(STRING);
             push(horizMirror(a));
@@ -3151,6 +3231,14 @@ class Executable extends Preprocessable {
           
           if (cc=="┐") {
             push("|");
+          }
+          
+          if (cc=="└") {
+            push("/");
+          }
+          
+          if (cc=="┘") {
+            push("\\");
           }
           
           if (cc=="╬") {
@@ -3276,6 +3364,9 @@ class Executable extends Preprocessable {
             Poppable l = a.a.get(0);//last
             BigDecimal count = B(0);
             ArrayList<Poppable> out = new ArrayList<Poppable>();
+            if (a.type != ARRAY) {
+              a.a = chop(a);
+            }
             for (Poppable c : a.a) {
               if (c.equals(l) || c == a.a.get(0)) {
                 count = count.add(B(1));
@@ -4200,8 +4291,8 @@ Poppable reverseStrings (Poppable inp) {
   }
   return tp(out);
 }
-interface Vo {
-  Poppable e(Poppable inp);
+public class Vo {
+  public Poppable e(Poppable inp){return null;}public Vo s(String a, String b){return this;}
 }
 Poppable vectorize (Poppable inp, Vo rn) {
   Poppable ce = rn.e(inp);
