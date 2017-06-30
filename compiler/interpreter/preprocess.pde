@@ -168,7 +168,8 @@ class Preprocessable {
       
     }*/
     if (loopStack.size()>0) {
-      for (int i = 0; i < loopStack.size(); i++) p+='}';
+      if (sdata.length>0 && sdata[sdata.length-1] == 3) p+= '”';
+      for (int i = 0; i < loopStack.size(); i++) p+= '}';
       eprintln("preprocessor: "+p.replace("\n", "…"));
       return preprocess(p, inputs);
     }

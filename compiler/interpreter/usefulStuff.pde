@@ -130,7 +130,7 @@ Poppable horizPalen (Poppable inp, int center, boolean swapChars, boolean extraS
   if (inp.type==STRING) {
     return horizPalen(SA2PA(inp.s.split("\n")), center, swapChars, extraSpace);
   }
-  if (inp.type==BIGDECIMAL) return tp(B(inp.s+(new StringBuilder(inp.s).reverse().substring(center%2))));
+  if (inp.type==BIGDECIMAL) return tp(B((inp.s+(new StringBuilder(inp.s).reverse().substring(center%2))).replaceAll("(\\..+)\\.", "$1")));
   if (extraSpace && inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
   ArrayList<Poppable> out = ea();
   for (Poppable c : inp.a) {
@@ -142,7 +142,7 @@ Poppable horizPalenNS (Poppable inp, int center, boolean swapChars, boolean extr
   if (inp.type==STRING) {
     return tp(inp.s+(new StringBuilder(swapChars? horizMirror(inp).s : inp.s).reverse().substring(center%2)));
   }
-  if (inp.type==BIGDECIMAL) return tp(B(inp.s+(new StringBuilder(inp.s).reverse().substring(center%2))));
+  if (inp.type==BIGDECIMAL) return tp(inp.s+(new StringBuilder(inp.s).reverse().substring(center%2)));
   if (extraSpace && inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
   ArrayList<Poppable> out = ea();
   for (Poppable c : inp.a) {

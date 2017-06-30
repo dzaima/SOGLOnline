@@ -1,8 +1,8 @@
-import java.util.function.Function; //<>//
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>//
-//numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx           x  x        xx  xxxx│
-//strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx     xx    x  x         x   xxx│
-//arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx     xx    x  x x x   x     x x│
+import java.util.function.Function; //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>//
+//numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
+//strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
+//arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
 //^^ are the currently supported functions
 String printableAscii =  " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 String ASCII = "";
@@ -558,8 +558,11 @@ String[] writeExc (String[] a, int xp, int yp, Poppable b, char excludable) {
   return a;
 }
 
-void clearOutput() throws Exception { 
+void clearOutput() { 
   //I don't know how to clear stdout, nor does the internet give anything that works
+  /**/
+  soglOS = "";
+  //*/
   savedOut = new StringList(); 
 }
 int divCeil (int a, int b) {
@@ -1896,6 +1899,11 @@ class Executable extends Preprocessable {
             if (a.type==ARRAY) {
               int hlen = 0;
               for (Poppable p : a.a) {
+                if (p.type != ARRAY) {
+                  ArrayList<Poppable> chopped = chop(p);
+                  p.type = ARRAY;
+                  p.a = chopped;
+                }
                 if (p.a.size() > hlen) {
                   hlen = p.a.size();
                 }
@@ -1928,6 +1936,11 @@ class Executable extends Preprocessable {
             if (a.type==ARRAY) {
               int hlen = 0;
               for (Poppable p : a.a) {
+                if (p.type != ARRAY) {
+                  ArrayList<Poppable> chopped = chop(p);
+                  p.type = ARRAY;
+                  p.a = chopped;
+                }
                 if (p.a.size() > hlen) {
                   hlen = p.a.size();
                 }
@@ -1986,7 +1999,7 @@ class Executable extends Preprocessable {
           if (cc=="N") push(B(256));
   
           if (cc=="O") {
-            output(true, true, true);
+            output(true, true, false);
           }
           if (cc=="P") {
             output(true, true, true);
@@ -2825,7 +2838,7 @@ class Executable extends Preprocessable {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL) {
               ArrayList<Poppable> out = ea();
-              for (BigDecimal i = B(1); i.compareTo(a.bd)!=1; i = i.add(B(1))) //<>// //<>// //<>// //<>// //<>// //<>//
+              for (BigDecimal i = B(1); i.compareTo(a.bd)!=1; i = i.add(B(1))) //<>// //<>// //<>// //<>// //<>// //<>// //<>//
                 if (a.bd.divideAndRemainder(i)[1].equals(B(0)))
                   out.add(new Poppable(i));
               push(out);
@@ -3285,7 +3298,7 @@ class Executable extends Preprocessable {
               for (String cs : loadStrings("palenChars.txt")) {
                 ln++;
                 if (cs.startsWith(ctc+"")) {
-                  String bits = cs.replaceAll("(^.|[^01])", "");
+                  String bits = cs.replace(new RegExp("(^.|[^01])","g"), "");
                   if (ln > 12) {
                     if (ln > 22) {
                       a = quadPalen(a, int(bits.charAt(0)), int(bits.charAt(1)), bits.charAt(2)=="1"?true:false, bits.charAt(3)=="1"?true:false, bits.charAt(4)=="1"?true:false);
@@ -3335,7 +3348,7 @@ class Executable extends Preprocessable {
             }
             if (a.type==STRING) {
               if (b.type==ARRAY) {
-                int maxlen = 0; //<>//
+                int maxlen = 0; //<>// //<>//
                 for (Poppable c : b.a) 
                   if (c.s.length()>maxlen) 
                     maxlen = c.s.length();
@@ -3352,6 +3365,11 @@ class Executable extends Preprocessable {
               }
             }
           }
+          
+          if (cc=="╔") {
+            push("_");
+          }
+          
           if (cc=="░") {
             clearOutput();
           }
@@ -3838,7 +3856,8 @@ class Preprocessable {
       
     }*/
     if (loopStack.size()>0) {
-      for (int i = 0; i < loopStack.size(); i++) p+="}";
+      if (sdata.length>0 && sdata[sdata.length-1] == 3) p+= "”";
+      for (int i = 0; i < loopStack.size(); i++) p+= "}";
       eprintln("preprocessor: "+p.replace("\n", "…"));
       return preprocess(p, inputs);
     }
@@ -4203,7 +4222,7 @@ Poppable horizPalen (Poppable inp, int center, boolean swapChars, boolean extraS
   if (inp.type==STRING) {
     return horizPalen(SA2PA(inp.s.split("\n")), center, swapChars, extraSpace);
   }
-  if (inp.type==BIGDECIMAL) return tp(B(inp.s+(new StringBuilder(inp.s).reverse().substring(center%2))));
+  if (inp.type==BIGDECIMAL) return tp(B((inp.s+(new StringBuilder(inp.s).reverse().substring(center%2))).replace(new RegExp("(\\..+)\\.","g"), "$1")));
   if (extraSpace && inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
   ArrayList<Poppable> out = ea();
   for (Poppable c : inp.a) {
@@ -4215,7 +4234,7 @@ Poppable horizPalenNS (Poppable inp, int center, boolean swapChars, boolean extr
   if (inp.type==STRING) {
     return tp(inp.s+(new StringBuilder(swapChars? horizMirror(inp).s : inp.s).reverse().substring(center%2)));
   }
-  if (inp.type==BIGDECIMAL) return tp(B(inp.s+(new StringBuilder(inp.s).reverse().substring(center%2))));
+  if (inp.type==BIGDECIMAL) return tp(inp.s+(new StringBuilder(inp.s).reverse().substring(center%2)));
   if (extraSpace && inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
   ArrayList<Poppable> out = ea();
   for (Poppable c : inp.a) {
@@ -4237,7 +4256,7 @@ Poppable vertPalen (Poppable inp, int center, boolean swapChars, boolean extraSp
   if (swapChars) out = vertMirror(tp(out)).a;
   for (int i = 0; i < ssize; i++) {
     if (center == 1 && i==ssize-1 && inp.a.get(i).type == STRING)
-      out.add(i, tp(inp.a.get(i).s.replaceAll("[,.`']", ":")));
+      out.add(i, tp(inp.a.get(i).s.replace(new RegExp("[,.`']","g"), ":")));
     else
       out.add(i, inp.a.get(i));
   }

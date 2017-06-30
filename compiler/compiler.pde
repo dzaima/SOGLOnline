@@ -62,6 +62,7 @@ String process (String s) {
           .replaceAll("\\(char\\)([^\n]+?)\\+\"\"", "String.fromCharCode($1)")
           .replace(", StandardCharsets.UTF_8", "")
           .replace("readFile", "loadString")
+          .replaceAll("\\.replaceAll\\(\"(([^\"]|\\.)*)\"", ".replace(new RegExp(\"$1\",\"g\")")
           .replace("//P5JSPushes", le("pushes.pde"))
           .replace("//P5JSfromPase", le("fromBase.pde"))
           .replaceAll("'([^\\\\]|\\\\.)'", "\"$1\"")
