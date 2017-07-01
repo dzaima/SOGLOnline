@@ -171,9 +171,9 @@ Poppable vertPalen (Poppable inp, int center, boolean swapChars, boolean extraSp
   return tp(out);
 }
 Poppable quadPalen (Poppable inp, int centerX, int centerY, boolean swapCharsX, boolean swapCharsY, boolean extraSpace) {
-  if (extraSpace && inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
-  inp = horizPalen(inp, centerX, swapCharsX, false);
-  inp = vertPalen(inp, centerY, swapCharsY, false);
+  //if (extraSpace && inp.a.size()>0 && inp.a.get(0).type!=ARRAY) inp.a = spacesquared(inp.a);
+  inp = vertPalen(inp, centerY, swapCharsY, extraSpace);
+  inp = horizPalen(inp, centerX, swapCharsX, extraSpace);
   return inp;
 }
 Poppable regexReplace (Poppable inp, String what, String toWhat) {
