@@ -3402,6 +3402,13 @@ class Executable extends Preprocessable {
           if (cc=="░") {
             clearOutput();
           }
+          
+          if (cc=="▒") {
+            /**/
+            await currOutput();
+            //*/
+          }
+          
           if (cc=="█") {
             push (ALLCHARS);
           }
