@@ -24,6 +24,8 @@ class Executable extends Preprocessable {
       /*ADDP5
       if (!specifiedScreenRefresh && justOutputted)
         await currOutput();
+      else if (sleepBI)
+        await sleep(0);
       if (debugMode) {
         if (debugMode==1 || (debugMode==2 && ptr >= bpS && ptr < bpE)) {
           debugMode = 1;

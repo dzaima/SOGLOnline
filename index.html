@@ -27,8 +27,8 @@
       <button onclick="runClicked()" style="width:47%">run</button>
       <button onclick="permalink()" style="width:47%; float:right;">permalink</button>
     </div>
-      <button id="stepBtn" onclick="step()" style="width:83px;" hidden=true>step</button>
-      <button id="contBtn" onclick="dCont()" style="width:83px;" hidden=true>continue</button>
+      <button id="stepBtn" onclick="step()" style="width:83px;" hidden>step</button>
+      <button id="contBtn" onclick="dCont()" style="width:83px;" hidden>continue</button>
     <br>
     <div id="p" style="width:220px">
       <input type="button" id="loadSOGL" value="load SOGL codepage encoded file" onclick="loadSOGL()"; style="width:100%"></input>
@@ -48,6 +48,7 @@
   <script>
     var soglOS = "";
     var soglOSP = "";
+    var sleepBI = false;
     var cp;
     var debugMode = 0;
     var justStepped = false;
