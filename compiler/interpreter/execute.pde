@@ -4,6 +4,7 @@ class Executable extends Preprocessable {
   char lastO = ' ';
   char cc;
   boolean ao;
+  boolean justOutputted = false;
   Poppable jumpObj;
   Executable (String prog, String[] inputs) {
     super(prog, inputs);
@@ -12,12 +13,30 @@ class Executable extends Preprocessable {
     parent = p;
     return this;
   }
+  
   void execute() {
     Poppable a = new Poppable (p);
     Poppable b = new Poppable (B("0123456789"));
     ptr = -1;
+    int lastptr = 0;
     ao = true;
     while (true) {
+      /*ADDP5
+      if (!specifiedScreenRefresh && justOutputted)
+        await currOutput();
+      if (debugMode) {
+        if (debugMode==1 || (debugMode==2 && ptr >= bpS && ptr < bpE)) {
+          debugMode = 1;
+          execFinished(stack.toArray(), lastptr, ptr);
+          while (!justStepped) {
+            await sleep(50);
+          }
+          justStepped = false;
+        }
+      }
+      //*/
+      lastptr = ptr;
+      justOutputted = false;
       try {
         if (jumpObj != null) {
           if (jumpObj.type == BIGDECIMAL) {
@@ -136,7 +155,7 @@ class Executable extends Preprocessable {
             push(qwerty);
           }
           if (qdata[ptr]==20) {
-            delay(int(pop(BIGDECIMAL).bd.floatValue()*1000));
+            delay((int)(pop(BIGDECIMAL).bd.doubleValue()*1000));
           }
           if (qdata[ptr]==21) {
             push("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -1723,7 +1742,12 @@ class Executable extends Preprocessable {
             b = pop();
             a = pop();
             if (a.type==BIGDECIMAL && b.type==BIGDECIMAL)
-              push(log(a.bd.floatValue())/log(b.bd.floatValue()));
+              push(B(Math.log(a.bd.doubleValue())/Math.log(b.bd.doubleValue())));
+          }
+          
+          if (cc=='υ') {
+            a = pop(BIGDECIMAL);
+            push(a.tobd().divide(B(10)));
           }
           
           if (cc=='Χ') {
@@ -2274,7 +2298,7 @@ class Executable extends Preprocessable {
         //while (millis()<CTR*20);
         if (getDebugInfo) {
           //eprintln("`"+cc+"`@"+((sptr+"").length()==1?"0"+sptr:sptr)+": "+stack.toString().replace("\n  ", "").replace("\n", ""));
-          eprint("\n"+getStart(false)+"`"+cc+"`@"+up0(sptr, str(p.length()).length())+": [");
+          eprint(getStart(false)+"`"+cc+"`@"+up0(sptr, str(p.length()).length())+": [");
           
           int EPC=0;
           for (Poppable EP : stack) {
@@ -2282,7 +2306,7 @@ class Executable extends Preprocessable {
             eprint(EP.sline(true));
             if (EPC<stack.size()) eprint(", ");
           }
-          eprint("]");
+          eprintln("]");
         }
         //--------------------------------------loop end--------------------------------------
       } 
@@ -2304,6 +2328,7 @@ class Executable extends Preprocessable {
     /*else {
       if ("OQPT".contains(lastO+"")) oprintln();
     }*/
+    justOutputted = true;
     Poppable popped;
     if (shouldPop) popped = pop(STRING);
     else     popped = npop(STRING);

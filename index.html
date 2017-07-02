@@ -27,6 +27,8 @@
       <button onclick="runClicked()" style="width:47%">run</button>
       <button onclick="permalink()" style="width:47%; float:right;">permalink</button>
     </div>
+      <button id="stepBtn" onclick="step()" style="width:83px;" hidden=true>step</button>
+      <button id="contBtn" onclick="dCont()" style="width:83px;" hidden=true>continue</button>
     <br>
     <div id="p" style="width:220px">
       <input type="button" id="loadSOGL" value="load SOGL codepage encoded file" onclick="loadSOGL()"; style="width:100%"></input>
@@ -36,15 +38,24 @@
     <div id="p">
       <input type="file" id="fileinput" accept=".soglbin"/>
       <br>
+      <input id="debugCheck" type="checkbox" onclick="updateDebugMode()">debug mode</input>
+      <span id="vArrH" hidden><input id="visualizeArrays" type="checkbox" onclick="updateStackViz()" checked>vizualize arrays</input></span>
       <a id="savedLink"></a>
     </div>
   </div>
+  <div id="stackPlace"> </div>
+  <div id="wtest" class="wtest"/>
   <script>
     var soglOS = "";
+    var soglOSP = "";
     var cp;
+    var debugMode = 0;
+    var justStepped = false;
+    var bpS, bpE;
     var ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’";
     var pobj = document.getElementById("program");
     var args = location.search.substring(1).split(",");
+    var lastScroll;
     document.onkeydown = update;
     for (var i = 0; i < args.length; i++) {
       var carg = args[i];
@@ -59,7 +70,7 @@
       var prog = pobj.value;
       var inps = document.getElementById("inputs").value;
       cp.launchSOGL(prog, inps.split("\n"));
-      document.getElementById("output").value = soglOS;
+      document.getElementById("output").value = soglOSP;
     }
     
     function update() {
@@ -73,6 +84,14 @@
       //console.log(startPos+" "+endPos);
     }
     
+    function updateDebugMode () {
+      debugMode = document.getElementById("debugCheck").checked? 1 : 0;
+      document.getElementById("stepBtn").hidden = !debugMode;
+      document.getElementById("contBtn").hidden = !debugMode;
+      document.getElementById("vArrH").hidden = !debugMode;
+      outputMode(debugMode? 2 : 0)
+    }
+    
     function permalink() {
       var res = location.href.substring(0,location.href.length-location.search.length)+"?";
       res+= "code="+ (btoa(escape(pobj.value)).replace(/=/g, "_"));
@@ -81,6 +100,7 @@
         res+= ",inputs="+ btoa(escape(inputs)).replace(/=/g, "_");
       document.getElementById("output").value = res;
     }
+    
     function saveSOGL() {
       if (!cp) cp = Processing.instances[0];
       var link = document.getElementById("savedLink");
@@ -111,6 +131,79 @@
       pobj.value = prog;
       update();
     }
+    //https://stackoverflow.com/a/39914235/7528415
+    function sleep (ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    async function currOutput() {
+      await sleep(0);
+      cp.readyOutput();
+      document.getElementById("output").value = soglOSP;
+    }
+    function jsmodify (js) {
+      return js.replace(/function execute/g, "async function execute");
+    }
+    function step () {
+      if (!cp) runClicked();
+      lastScroll = window.pageYOffset;
+      justStepped = true;
+    }
+    function dCont () {
+      if (!cp) runClicked();
+      lastScroll = window.pageYOffset;
+      debugMode = 2;
+      justStepped = true;
+    }
+    var lstack, llastptr, lptr;
+    var charW = 8;
+    var charH = 17;
+    function execFinished (stack, lastptr, ptr) {
+      lstack = stack;
+      llastptr = lastptr;
+      lptr = ptr;
+      var program = document.getElementById("program")
+      program.focus();
+      program.setSelectionRange(lastptr+1, ptr+1);
+      var stackHoriz = false;
+      var stackPlace = document.getElementById("stackPlace");
+      var wtest = document.getElementById("wtest");
+      stackPlace.innerHTML = "";
+      stack.forEach(item=> {
+        if (stackHoriz) {
+          
+        } else {
+          var ce = document.createElement("textarea")
+          ce.value = item.stringRepr(document.getElementById("visualizeArrays").checked)
+          let sval = ce.value.split("\n");
+          let mlen = 0;
+          for (let i = 0; i < sval.length; i++) {
+            if (sval[i].length > mlen) mlen = sval[i].length;
+          }
+          //wtest.innerHTML = ce.value;
+          //let cwidth = wtest.clientWidth;
+          //let cheight = wtest.clientHeight;
+          ce.style = "width:"+ (mlen*charW+33) +"px; height:"+ Math.max((sval.length+1)*charH, 70) +"px;vertical-align:top;"//"width:"+ cwidth +"px; height:"+ cheight +"px;vertical-align:top;"//
+          stackPlace.appendChild(ce);
+        }
+      })
+      if (lastScroll) {
+        window.scrollTo(window.pageXOffset, lastScroll);
+        lastScroll = undefined;
+      }
+    }
+    function updateStackViz () {
+      execFinished(lstack, llastptr, lptr);
+    }
+    function outputMode (mode) {
+      document.getElementById("output").style = mode==1? "width: 49%; height:300px" : (mode==2? "width: 100%; height:50px" : "width: 100%; height:300px");
+    }
+    document.addEventListener ("keydown", e=> {
+      if (e.ctrlKey && e.code === "KeyB") {
+        bpS = document.getElementById("program").selectionStart;
+        bpE = document.getElementById("program").selectionEnd;
+      }
+    });
+    
     update();
   </script>
 </body>

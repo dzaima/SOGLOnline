@@ -155,18 +155,22 @@ class Poppable {
     if (type==BIGDECIMAL) return bd;
     return new BigDecimal(s);
   }
-  String returnStr(boolean multiline) {
+  String toMLStr(boolean multiline) {//to multiline string
     if (type==STRING) return s;
     if (type==BIGDECIMAL) return bd.toString();
     String res = "";
-    for (int i = 0; i < a.size()-1; i++) {
-      res+= a.get(i).returnStr(false);
+    for (int i = 0; i < a.size(); i++) {
+      res+= a.get(i).toMLStr(false);
       if (multiline) res+="\n";
     }
-    if (a.size()>0) a.get(a.size()-1).returnStr(false);
+    if (a.size()>0) a.get(a.size()-1).toMLStr(false);
     return res;
   }
   String toString() {
-    return returnStr(false);
+    return toMLStr(true);
+  }
+  String stringRepr(boolean multilineArrays) {
+    if (type == ARRAY && multilineArrays) return toMLStr(true);
+    return sline(true);
   }
 }

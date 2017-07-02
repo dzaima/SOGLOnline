@@ -23,6 +23,7 @@ class Preprocessable {
   Executable parent = null;
   String lastString = "Hello, World!";
   boolean lastStringUsed = false;
+  boolean specifiedScreenRefresh = false;
   Preprocessable (String prog, String[] inputs) {
     if (getDebugInfo)
       eprintln("###");
@@ -172,6 +173,9 @@ class Preprocessable {
       for (int i = 0; i < loopStack.size(); i++) p+= '}';
       eprintln("preprocessor: "+p.replace("\n", "…"));
       return preprocess(p, inputs);
+    }
+    for (int i = 0; i < p.length(); i++) {
+      if (p.charAt(i) == '▒' && sdata[i] != 3) specifiedScreenRefresh = true;
     }
     //p = p.replace("¶", "\n");
     if (!getDebugInfo) return this;

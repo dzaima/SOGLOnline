@@ -33,6 +33,7 @@ void setup() {
           mainPDE+= process(le("poppable12.pde")+"\n\n");
         else
           mainPDE+= process(new String(loadBytes(listOfFiles[i]), StandardCharsets.UTF_8)+"\n\n");
+        println("added "+ listOfFiles[i].getName());
       }
     }
     mainPDE = mainPDE.replace("//--ENDINIT--", le("additions.pde").replace("//insert", writableFiles));
@@ -68,6 +69,9 @@ String process (String s) {
           .replaceAll("'([^\\\\]|\\\\.)'", "\"$1\"")
           .replace("\"\\\\'\"", "\"'\"")
           .replace("\"\"\"", "\"\\\"\"")
+          .replace("delay", "await sleep")
+          .replace("/*IP5", "")
+          .replace("IP5*/", "")
           .replaceAll("\\.matches\\(\"(([^\"]|\\\\.)+)\"\\)", "\\.match\\(new RegExp\\(\"$1\"\\)\\)!=null")
           .replace("void setup() {", "void setup(){size(1,1);}void launchSOGLP2() {")
           .replaceAll("toCharArray\\(\\)\\) \\{","toCharArray\\(\\)\\) {s=String.fromCharCode(s);")

@@ -1,4 +1,5 @@
 soglOS = "";
+soglOSP = "";
 void launchSOGL(String program, String[] inputs) {
   soglOS = "";
   args = new String[inputs.length()+1];
@@ -7,17 +8,20 @@ void launchSOGL(String program, String[] inputs) {
     args[i+1] = inputs[i];
   }
   launchSOGLP2();
+  readyOutput();
+  console.log("escaped output: \""+(soglOSP.replace("\\","\\\\").replace("\"","\\\"").replace("\n", "\\n"))+"\"");
+}
+void readyOutput() {
+  soglOSP = soglOS;
   try {
-    if (soglOS.charAt(0)=="\n")
-      soglOS = soglOS.substring(1);
-    if (soglOS.charAt(soglOS.length()-1)=="\n")
-      soglOS = soglOS.substring(0, soglOS.length()-1);
-    if (soglOS.charAt(soglOS.length()-1)=="\n")
-      soglOS = soglOS.substring(0, soglOS.length()-1);
-    console.log("escaped output: \""+(soglOS.replace("\\","\\\\").replace("\"","\\\"").replace("\n", "\\n"))+"\"");
+    if (soglOSP.charAt(0)=="\n")
+      soglOSP = soglOSP.substring(1);
+    if (soglOSP.charAt(soglOSP.length()-1)=="\n")
+      soglOSP = soglOSP.substring(0, soglOSP.length()-1);
+    if (soglOSP.charAt(soglOSP.length()-1)=="\n")
+      soglOSP = soglOSP.substring(0, soglOSP.length()-1);
   } catch(Exception e){e.printStackTrace();}
 }
-
 /*
 boolean loaded = false;
 String lfCont = "";

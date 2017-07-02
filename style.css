@@ -1,18 +1,19 @@
-textarea {
+textarea, .wtest {
   overflow: auto;
   width: 98%;
   font-family: Consolas, DejaVu Sans Mono, Monaco, Lucida Console, Liberation Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-  font-size: 10p;
+  font-size: 14px;
   text-align: left;
   border-radius: 4px;
   height: 200px;
   background: #f8fff8;
 }
-#alls {
-  height: 100%;
-  width:100%
-  display: inline-block;
-  font-size:0;
+#wtest {
+  position: absolute;
+  visibility: hidden;
+  height: auto;
+  width: auto;
+  white-space: nowrap;
 }
 #left, #right, #p50 {
   vertical-align: top;

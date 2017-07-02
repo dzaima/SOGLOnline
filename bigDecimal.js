@@ -1125,8 +1125,11 @@
         return format(this, sd - 1, 2);
     };
     
-    P.floatValue = P.intValue = P.byteValue = P.longValue = function () {
+    P.intValue = P.byteValue = P.longValue = function () {
         return parseInt(this.toString());
+    }
+    P.floatValue = P.doubleValue = function () {
+        return parseFloat(this.toString());
     }
     P.divideAndRemainder = function (inp) {
         var remr = this.mod(inp);

@@ -1,5 +1,4 @@
-import java.util.function.Function; //<>// //<>//
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
@@ -38,6 +37,7 @@ Executable currentPrinter = null;
 int precision = 200;
 Poppable PZERO = new Poppable(ZERO);
 soglOS = "";
+soglOSP = "";
 void launchSOGL(String program, String[] inputs) {
   soglOS = "";
   args = new String[inputs.length()+1];
@@ -46,17 +46,20 @@ void launchSOGL(String program, String[] inputs) {
     args[i+1] = inputs[i];
   }
   launchSOGLP2();
+  readyOutput();
+  console.log("escaped output: \""+(soglOSP.replace("\\","\\\\").replace("\"","\\\"").replace("\n", "\\n"))+"\"");
+}
+void readyOutput() {
+  soglOSP = soglOS;
   try {
-    if (soglOS.charAt(0)=="\n")
-      soglOS = soglOS.substring(1);
-    if (soglOS.charAt(soglOS.length()-1)=="\n")
-      soglOS = soglOS.substring(0, soglOS.length()-1);
-    if (soglOS.charAt(soglOS.length()-1)=="\n")
-      soglOS = soglOS.substring(0, soglOS.length()-1);
-    console.log("escaped output: \""+(soglOS.replace("\\","\\\\").replace("\"","\\\"").replace("\n", "\\n"))+"\"");
+    if (soglOSP.charAt(0)=="\n")
+      soglOSP = soglOSP.substring(1);
+    if (soglOSP.charAt(soglOSP.length()-1)=="\n")
+      soglOSP = soglOSP.substring(0, soglOSP.length()-1);
+    if (soglOSP.charAt(soglOSP.length()-1)=="\n")
+      soglOSP = soglOSP.substring(0, soglOSP.length()-1);
   } catch(Exception e){e.printStackTrace();}
 }
-
 /*
 boolean loaded = false;
 String lfCont = "";
@@ -1222,6 +1225,7 @@ class Executable extends Preprocessable {
   char lastO = " ";
   char cc;
   boolean ao;
+  boolean justOutputted = false;
   Poppable jumpObj;
   Executable (String prog, String[] inputs) {
     super(prog, inputs);
@@ -1230,12 +1234,30 @@ class Executable extends Preprocessable {
     parent = p;
     return this;
   }
+  
   void execute() {
     Poppable a = new Poppable (p);
     Poppable b = new Poppable (B("0123456789"));
     ptr = -1;
+    int lastptr = 0;
     ao = true;
     while (true) {
+      /**/
+      if (!specifiedScreenRefresh && justOutputted)
+        await currOutput();
+      if (debugMode) {
+        if (debugMode==1 || (debugMode==2 && ptr >= bpS && ptr < bpE)) {
+          debugMode = 1;
+          execFinished(stack.toArray(), lastptr, ptr);
+          while (!justStepped) {
+            await sleep(50);
+          }
+          justStepped = false;
+        }
+      }
+      //*/
+      lastptr = ptr;
+      justOutputted = false;
       try {
         if (jumpObj != null) {
           if (jumpObj.type == BIGDECIMAL) {
@@ -1354,7 +1376,7 @@ class Executable extends Preprocessable {
             push(qwerty);
           }
           if (qdata[ptr]==20) {
-            delay(int(pop(BIGDECIMAL).bd.floatValue()*1000));
+            await sleep((int)(pop(BIGDECIMAL).bd.doubleValue()*1000));
           }
           if (qdata[ptr]==21) {
             push("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -2941,7 +2963,12 @@ class Executable extends Preprocessable {
             b = pop();
             a = pop();
             if (a.type==BIGDECIMAL && b.type==BIGDECIMAL)
-              push(log(a.bd.floatValue())/log(b.bd.floatValue()));
+              push(B(Math.log(a.bd.doubleValue())/Math.log(b.bd.doubleValue())));
+          }
+          
+          if (cc=="υ") {
+            a = pop(BIGDECIMAL);
+            push(a.tobd().divide(B(10)));
           }
           
           if (cc=="Χ") {
@@ -3492,7 +3519,7 @@ class Executable extends Preprocessable {
         //while (millis()<CTR*20);
         if (getDebugInfo) {
           //eprintln("`"+cc+"`@"+((sptr+"").length()==1?"0"+sptr:sptr)+": "+stack.toString().replace("\n  ", "").replace("\n", ""));
-          eprint("\n"+getStart(false)+"`"+cc+"`@"+up0(sptr, str(p.length()).length())+": [");
+          eprint(getStart(false)+"`"+cc+"`@"+up0(sptr, str(p.length()).length())+": [");
           
           int EPC=0;
           for (Poppable EP : stack) {
@@ -3500,7 +3527,7 @@ class Executable extends Preprocessable {
             eprint(EP.sline(true));
             if (EPC<stack.size()) eprint(", ");
           }
-          eprint("]");
+          eprintln("]");
         }
         //--------------------------------------loop end--------------------------------------
       } 
@@ -3522,6 +3549,7 @@ class Executable extends Preprocessable {
     /*else {
       if ("OQPT".contains(lastO+"")) oprintln();
     }*/
+    justOutputted = true;
     Poppable popped;
     if (shouldPop) popped = pop(STRING);
     else     popped = npop(STRING);
@@ -3684,6 +3712,24 @@ class Poppable {
     if (type==BIGDECIMAL) return bd;
     return new BigDecimal(s);
   }
+  String toMLStr(boolean multiline) {//to multiline string
+    if (type==STRING) return s;
+    if (type==BIGDECIMAL) return bd.toString();
+    String res = "";
+    for (int i = 0; i < a.size(); i++) {
+      res+= a.get(i).toMLStr(false);
+      if (multiline) res+="\n";
+    }
+    if (a.size()>0) a.get(a.size()-1).toMLStr(false);
+    return res;
+  }
+  String toString() {
+    return toMLStr(true);
+  }
+  String stringRepr(boolean multilineArrays) {
+    if (type == ARRAY && multilineArrays) return toMLStr(true);
+    return sline(true);
+  }
 }
 
 String quirkLetters = " 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -3711,6 +3757,7 @@ class Preprocessable {
   Executable parent = null;
   String lastString = "Hello, World!";
   boolean lastStringUsed = false;
+  boolean specifiedScreenRefresh = false;
   Preprocessable (String prog, String[] inputs) {
     if (getDebugInfo)
       eprintln("###");
@@ -3860,6 +3907,9 @@ class Preprocessable {
       for (int i = 0; i < loopStack.size(); i++) p+= "}";
       eprintln("preprocessor: "+p.replace("\n", "…"));
       return preprocess(p, inputs);
+    }
+    for (int i = 0; i < p.length(); i++) {
+      if (p.charAt(i) == "▒" && sdata[i] != 3) specifiedScreenRefresh = true;
     }
     //p = p.replace("¶", "\n");
     if (!getDebugInfo) return this;
