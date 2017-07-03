@@ -27,6 +27,7 @@
       <button onclick="runClicked()" style="width:47%">run</button>
       <button onclick="permalink()" style="width:47%; float:right;">permalink</button>
     </div>
+      <button id="stop" onclick="stopRunning()" style="width:83px;">stop</button>
       <button id="stepBtn" onclick="step()" style="width:83px;" hidden>step</button>
       <button id="contBtn" onclick="dCont()" style="width:83px;" hidden>continue</button>
     <br>
@@ -49,6 +50,8 @@
     var soglOS = "";
     var soglOSP = "";
     var sleepBI = false;
+    var stopProgram = false;
+    var running = false;
     var cp;
     var debugMode = 0;
     var justStepped = false;
@@ -65,15 +68,25 @@
       if (carg.startsWith("inputs="))
         document.getElementById("inputs").value = unescape(atob(carg.substring(7).replace(/_/g, "=")));
     }
-    function runClicked() {
+    async function runClicked() {
       if (!cp) cp = Processing.instances[0];
+      if (running) {
+        stopProgram = true;
+        while (stopProgram) {
+          await sleep(50);
+        }
+      }
+      stopProgram = false;
       soglOS = "";
       var prog = pobj.value;
       var inps = document.getElementById("inputs").value;
+      running = true;
       cp.launchSOGL(prog, inps.split("\n"));
       document.getElementById("output").value = soglOSP;
     }
-    
+    function stopRunning() {
+      stopProgram = true;
+    }
     function update() {
       var bytecount = pobj.value.length;
       var startPos = pobj.selectionStart;
@@ -142,7 +155,8 @@
       document.getElementById("output").value = soglOSP;
     }
     function jsmodify (js) {
-      return js.replace(/function execute/g, "async function execute");
+      return js.replace(/function execute/g, "async function execute")
+               .replace(/function launchSOGLP2/g, "async function launchSOGLP2");
     }
     function step () {
       if (!cp) runClicked();
@@ -180,9 +194,6 @@
           for (let i = 0; i < sval.length; i++) {
             if (sval[i].length > mlen) mlen = sval[i].length;
           }
-          //wtest.innerHTML = ce.value;
-          //let cwidth = wtest.clientWidth;
-          //let cheight = wtest.clientHeight;
           ce.style = "width:"+ (mlen*charW+33) +"px; height:"+ Math.max((sval.length+1)*charH, 70) +"px;vertical-align:top;"//"width:"+ cwidth +"px; height:"+ cheight +"px;vertical-align:top;"//
           stackPlace.appendChild(ce);
         }

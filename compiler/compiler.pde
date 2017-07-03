@@ -72,6 +72,7 @@ String process (String s) {
           .replace("delay", "await sleep")
           .replace("/*IP5", "")
           .replace("IP5*/", "")
+          .replace("System.exit(0);", "running = false;")
           .replaceAll("\\.matches\\(\"(([^\"]|\\\\.)+)\"\\)", "\\.match\\(new RegExp\\(\"$1\"\\)\\)!=null")
           .replace("void setup() {", "void setup(){size(1,1);}void launchSOGLP2() {")
           .replaceAll("toCharArray\\(\\)\\) \\{","toCharArray\\(\\)\\) {s=String.fromCharCode(s);")

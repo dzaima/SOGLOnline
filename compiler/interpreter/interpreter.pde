@@ -1,4 +1,4 @@
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
@@ -66,7 +66,7 @@ void setup() {
     //currentPrinter = new Executable("", null);
     Executable main = new Executable(program, inputs);
     currentPrinter = main;
-    main.execute();
+    /*IP5 await IP5*/main.execute();
     
     if (saveOutputToFile) {
       String j =savedOut.join("");

@@ -1,4 +1,15 @@
-String spaceup (String s, int l) {
+Poppable spaceup (Poppable p, int l) {
+  if (p.type == ARRAY) {
+    while (p.a.size()<l)
+      p.a.add(tp(" "));
+  } else {
+    while (p.s.length()<l)
+      p.s+=" ";
+    p.type = STRING;
+  }
+  return p;
+}
+String spaceupStr (String s, int l) {
   while (s.length()<l)
     s+=" ";
   return s;
@@ -7,11 +18,17 @@ ArrayList<Poppable> spacesquared(ArrayList<Poppable> arr) {
   ArrayList<Poppable> res = new ArrayList<Poppable>();
   int l = 0;
   for (Poppable b : arr) {
-    if (b.s.length() > l)
-      l = b.s.length();
+    if (b.type==ARRAY) {
+      if (b.a.size() > l)
+        l = b.a.size();
+    } else {
+      if (b.s.length() > l)
+        l = b.s.length();
+    }
+    
   }
   for (Poppable b : arr) {
-    res.add(tp(spaceup(b.s, l)));
+    res.add(spaceup(b, l));
   }
   return res;
 }
@@ -24,7 +41,7 @@ String[] SAspacesquared(String[] arr) {
   }
   int i = 0;
   for (String b : arr) {
-    res[i] = spaceup(b, l);
+    res[i] = spaceupStr(b, l);
     i++;
   }
   return res;
