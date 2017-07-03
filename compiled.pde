@@ -1766,9 +1766,6 @@ class Executable extends Preprocessable {
                   b = pop(BIGDECIMAL);
                 else
                   b = pop(STRING);
-                Poppable t = a;
-                a=b;
-                b=t;
               } else
                 b = pop();
               if (a.type==BIGDECIMAL&b.type==BIGDECIMAL)push(a.bd.add(b.bd)); 
