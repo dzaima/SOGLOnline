@@ -2154,24 +2154,10 @@ class Executable extends Preprocessable {
           }
   
           if (cc=="^") {
-            if (stack.size()==0) {
-              a=pop(BIGDECIMAL);
-              push(a.bd.multiply(B(0)));
-            } else {
-              a = pop();
-              if (stack.size()==0) {
-                if (a.type==STRING)
-                  b = pop(STRING);
-                else
-                  b = pop(BIGDECIMAL);
-                Poppable t = a;
-                a=b;
-                b=t;
-              } else
-                b = pop();
-              if (a.type==BIGDECIMAL&b.type==BIGDECIMAL)push(b.bd.pow(a.bd.intValue())); 
-              //else if ((a.type==BIGDECIMAL|a.type==STRING)&(b.type==BIGDECIMAL|b.type==STRING)) push(b.s+a.s);
-            }
+            b = pop(BIGDECIMAL);
+            a = pop(BIGDECIMAL);
+            if (b.type==BIGDECIMAL && a.type==BIGDECIMAL)
+              push(a.bd.pow(b.bd.intValue())); 
           }
           
           if (cc=="_") {
