@@ -7,7 +7,7 @@ void launchSOGL(String program, String[] inputs) {
   for (int i = 0; i < inputs.length(); i++) {
     args[i+1] = inputs[i];
   }
-  launchSOGLP2();
+  await launchSOGLP2();
   readyOutput();
   console.log("escaped output: \""+(soglOSP.replace("\\","\\\\").replace("\"","\\\"").replace("\n", "\\n"))+"\"");
 }
@@ -38,7 +38,7 @@ function loadFile (String dir) {
   var quote;
  
   return new Promise(function(resolve, reject) {
-    request('http://ron-swanson-quotes.herokuapp.com/v2/quotes', function(error, response, body) {
+    request('', function(error, response, body) {
       quote = body;
  
       resolve(quote);

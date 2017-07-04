@@ -280,101 +280,111 @@ String[] emptySA(int xs, int ys) {
   return out;
 }
 String[] write(String[] a, int xp, int yp, Poppable b) {
-  a = SAspacesquared(a);
-  if (b.type != ARRAY) {
-    b = toArray(b);
-  }
-  b.a = spacesquared(to1DMLSA(b.a));
-  if (xp < 1) {
-    String ps = "";
-    for (int i = 0; i < 1-xp; i++) {
-      ps+= " ";
-    }
-    for (int i = 0; i < a.length; i++) {
-      a[i] = ps+a[i];
-    }
-    xp=1;
-  }
-  if (yp < 1) {
-    String[] na = new String[a.length+(1-yp)];
-    for (int i = 0; i < na.length; i++) {
-      if (i < 1-yp) na[i] = "";
-      else na[i] = a[i-(1-yp)];
-    }
-    a = na;
-    yp=1;
-  }
-  a = SAspacesquared(a);
-  if (a.length==0) a = new String[]{""};
-  //println(getLongestXFrom(b)+"#"+b.a.get(0).s+"#"+xp+"#"+a[0].length());
-  if (getLongestXFrom(b)+xp-1 > a[0].length()) {
-    int gotoLen = (getLongestXFrom(b)+xp)-a[0].length()-1;
-    for (int i = 0; i < gotoLen; i++)
-      a[0]+=" ";
+  if ((b.type==ARRAY? b.a.size() : b.s.length()) > 0) {
     a = SAspacesquared(a);
-  }
-  if (b.a.size()+yp > a.length) {
-    String[] na = new String[(b.a.size()+yp)];
-    for (int i = 0; i < (b.a.size()+yp); i++) {
-      na[i] = i < a.length? a[i] : "";
+    if (b.type != ARRAY) {
+      b = toArray(b);
     }
-    a = na;
+    b.a = spacesquared(to1DMLSA(b.a));
+    if (xp < 1) {
+      String ps = "";
+      for (int i = 0; i < 1-xp; i++) {
+        ps+= " ";
+      }
+      for (int i = 0; i < a.length; i++) {
+        a[i] = ps+a[i];
+      }
+      xp=1;
+    }
+    if (yp < 1) {
+      //console.log(a.length);
+      if (a.length > 0) {
+        String[] na = new String[a.length+(1-yp)];
+        for (int i = 0; i < na.length; i++) {
+          if (i < 1-yp) na[i] = "";
+          else na[i] = a[i-(1-yp)];
+        }
+        a = na;
+      }
+      yp=1;
+    }
     a = SAspacesquared(a);
-  }
-  for (int x = 0; x < getLongestXFrom(b); x++) {
-    for (int y = 0; y < b.a.size(); y++) {
-      a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
+    if (a.length==0) a = new String[]{""};
+    //println(getLongestXFrom(b)+"#"+b.a.get(0).s+"#"+xp+"#"+a[0].length());
+    if (getLongestXFrom(b)+xp-1 > a[0].length()) {
+      int gotoLen = (getLongestXFrom(b)+xp)-a[0].length()-1;
+      for (int i = 0; i < gotoLen; i++)
+        a[0]+=" ";
+      a = SAspacesquared(a);
+    }
+    if (b.a.size()+yp > a.length+1) {
+      String[] na = new String[(b.a.size()+yp)-1];
+      for (int i = 0; i < na.length; i++) {
+        na[i] = i < a.length? a[i] : "";
+      }
+      a = na;
+      a = SAspacesquared(a);
+    }
+    for (int x = 0; x < getLongestXFrom(b); x++) {
+      for (int y = 0; y < b.a.size(); y++) {
+        a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
+      }
     }
   }
   return a;
 }
 
 String[] writeExc (String[] a, int xp, int yp, Poppable b, char excludable) {
-  a = SAspacesquared(a);
-  if (b.type != ARRAY) {
-    b = toArray(b);
-  }
-  b.a = spacesquared(to1DMLSA(b.a));
-  if (xp < 1) {
-    String ps = "";
-    for (int i = 0; i < 1-xp; i++) {
-      ps+= " ";
-    }
-    for (int i = 0; i < a.length; i++) {
-      a[i] = ps+a[i];
-    }
-    xp=1;
-  }
-  if (yp < 1) {
-    String[] na = new String[a.length+(1-yp)];
-    for (int i = 0; i < na.length; i++) {
-      if (i < 1-yp) na[i] = "";
-      else na[i] = a[i-(1-yp)];
-    }
-    a = na;
-    yp=1;
-  }
-  a = SAspacesquared(a);
-  if (a.length==0) a = new String[]{""};
-  //println(getLongestXFrom(b)+"#"+b.a.get(0).s+"#"+xp+"#"+a[0].length());
-  if (getLongestXFrom(b)+xp-1 > a[0].length()) {
-    int gotoLen = (getLongestXFrom(b)+xp)-a[0].length()-1;
-    for (int i = 0; i < gotoLen; i++)
-      a[0]+=" ";
+  if ((b.type==ARRAY? b.a.size() : b.s.length()) > 0) {
     a = SAspacesquared(a);
-  }
-  if (b.a.size()+yp > a.length) {
-    String[] na = new String[(b.a.size()+yp)];
-    for (int i = 0; i < (b.a.size()+yp); i++) {
-      na[i] = i < a.length? a[i] : "";
+    if (b.type != ARRAY) {
+      b = toArray(b);
     }
-    a = na;
+    b.a = spacesquared(to1DMLSA(b.a));
+    if (xp < 1) {
+      String ps = "";
+      for (int i = 0; i < 1-xp; i++) {
+        ps+= " ";
+      }
+      for (int i = 0; i < a.length; i++) {
+        a[i] = ps+a[i];
+      }
+      xp=1;
+    }
+    if (yp < 1) {
+      //console.log(a.length);
+      if (a.length > 0) {
+        String[] na = new String[a.length+(1-yp)];
+        for (int i = 0; i < na.length; i++) {
+          if (i < 1-yp) na[i] = "";
+          else na[i] = a[i-(1-yp)];
+        }
+        a = na;
+      }
+      yp=1;
+    }
     a = SAspacesquared(a);
-  }
-  for (int x = 0; x < getLongestXFrom(b); x++) {
-    for (int y = 0; y < b.a.size(); y++) {
-      if (b.a.get(y).s.charAt(x) != excludable)
-        a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
+    if (a.length==0) a = new String[]{""};
+    //println(getLongestXFrom(b)+"#"+b.a.get(0).s+"#"+xp+"#"+a[0].length());
+    if (getLongestXFrom(b)+xp-1 > a[0].length()) {
+      int gotoLen = (getLongestXFrom(b)+xp)-a[0].length()-1;
+      for (int i = 0; i < gotoLen; i++)
+        a[0]+=" ";
+      a = SAspacesquared(a);
+    }
+    if (b.a.size()+yp > a.length+1) {
+      String[] na = new String[(b.a.size()+yp)-1];
+      for (int i = 0; i < na.length; i++) {
+        na[i] = i < a.length? a[i] : "";
+      }
+      a = na;
+      a = SAspacesquared(a);
+    }
+    for (int x = 0; x < getLongestXFrom(b); x++) {
+      for (int y = 0; y < b.a.size(); y++) {
+        if (b.a.get(y).s.charAt(x) != excludable)
+          a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
+      }
     }
   }
   return a;

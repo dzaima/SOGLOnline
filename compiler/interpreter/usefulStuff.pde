@@ -180,9 +180,9 @@ Poppable vertPalen (Poppable inp, int center, boolean swapChars, boolean extraSp
   }
   if (swapChars) out = vertMirror(tp(out)).a;
   for (int i = 0; i < ssize; i++) {
-    if (center == 1 && i==ssize-1 && inp.a.get(i).type == STRING)
-      out.add(i, tp(inp.a.get(i).s.replaceAll("[,.`']", ":")));
-    else
+    if (center == 1 && i==ssize-1 && inp.a.get(i).type == STRING) {
+      out.add(i, tp(inp.a.get(i).s.replaceAll("[,.`']", ":").replaceAll("[\\\\/]", "X")));
+    } else
       out.add(i, inp.a.get(i));
   }
   return tp(out);

@@ -106,6 +106,8 @@
         Big.ZERO = Big("0");
         Big.ONE = Big("1");
         Big.ROUND_HALF_UP = 1;
+        Big.ROUND_CEILING = 3;
+        Big.ROUND_FLOOR = 0;
 
         return Big;
     }

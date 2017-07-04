@@ -15,7 +15,7 @@
   <div id="all">
     <div id="left">
       <div id="p" style="width:40%;"><span id="bytecount" style="font-size:12px">0 bytes</span></div><div id="p" style="width:20%;"><center><b>CODE</b></center></div>
-      <textarea id="program" placeholder="Enter code..." spellcheck="false" onclick="setTimeout(update, 1);" oninput="setTimeout(update, 1);"></textarea>
+      <textarea id="program" placeholder="Enter code..." spellcheck="false" onclick="setTimeout(updater, 0);" oninput="setTimeout(updater, 0);"></textarea>
     </div>
     <div id="right" align="right">
       <center><b>INPUTS</b></center>
@@ -60,7 +60,7 @@
     var pobj = document.getElementById("program");
     var args = location.search.substring(1).split(",");
     var lastScroll;
-    document.onkeydown = update;
+    document.onkeydown = updater;
     for (var i = 0; i < args.length; i++) {
       var carg = args[i];
       if (carg.startsWith("code="))
@@ -81,11 +81,15 @@
       var prog = pobj.value;
       var inps = document.getElementById("inputs").value;
       running = true;
-      cp.launchSOGL(prog, inps.split("\n"));
+      await cp.launchSOGL(prog, inps.split("\n"));
       document.getElementById("output").value = soglOSP;
     }
     function stopRunning() {
       stopProgram = true;
+    }
+    function updater() {
+      setTimeout (update, 0);
+      setTimeout (update, 10);
     }
     function update() {
       var bytecount = pobj.value.length;
@@ -156,7 +160,8 @@
     }
     function jsmodify (js) {
       return js.replace(/function execute/g, "async function execute")
-               .replace(/function launchSOGLP2/g, "async function launchSOGLP2");
+               .replace(/function launchSOGLP2\b/g, "async function launchSOGLP2")
+               .replace(/function launchSOGL\b/g, "async function launchSOGL");
     }
     function step () {
       if (!cp) runClicked();
@@ -213,6 +218,10 @@
       if (e.ctrlKey && e.code === "KeyB") {
         bpS = document.getElementById("program").selectionStart;
         bpE = document.getElementById("program").selectionEnd;
+      }
+      //console.log(e.code);
+      if (e.ctrlKey && e.code === "Enter") {
+        runClicked();
       }
     });
     

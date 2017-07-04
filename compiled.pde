@@ -45,7 +45,7 @@ void launchSOGL(String program, String[] inputs) {
   for (int i = 0; i < inputs.length(); i++) {
     args[i+1] = inputs[i];
   }
-  launchSOGLP2();
+  await launchSOGLP2();
   readyOutput();
   console.log("escaped output: \""+(soglOSP.replace("\\","\\\\").replace("\"","\\\"").replace("\n", "\\n"))+"\"");
 }
@@ -76,7 +76,7 @@ function loadFile (String dir) {
   var quote;
  
   return new Promise(function(resolve, reject) {
-    request('http://ron-swanson-quotes.herokuapp.com/v2/quotes', function(error, response, body) {
+    request('', function(error, response, body) {
       quote = body;
  
       resolve(quote);
@@ -461,101 +461,111 @@ String[] emptySA(int xs, int ys) {
   return out;
 }
 String[] write(String[] a, int xp, int yp, Poppable b) {
-  a = SAspacesquared(a);
-  if (b.type != ARRAY) {
-    b = toArray(b);
-  }
-  b.a = spacesquared(to1DMLSA(b.a));
-  if (xp < 1) {
-    String ps = "";
-    for (int i = 0; i < 1-xp; i++) {
-      ps+= " ";
-    }
-    for (int i = 0; i < a.length; i++) {
-      a[i] = ps+a[i];
-    }
-    xp=1;
-  }
-  if (yp < 1) {
-    String[] na = new String[a.length+(1-yp)];
-    for (int i = 0; i < na.length; i++) {
-      if (i < 1-yp) na[i] = "";
-      else na[i] = a[i-(1-yp)];
-    }
-    a = na;
-    yp=1;
-  }
-  a = SAspacesquared(a);
-  if (a.length==0) a = new String[]{""};
-  //println(getLongestXFrom(b)+"#"+b.a.get(0).s+"#"+xp+"#"+a[0].length());
-  if (getLongestXFrom(b)+xp-1 > a[0].length()) {
-    int gotoLen = (getLongestXFrom(b)+xp)-a[0].length()-1;
-    for (int i = 0; i < gotoLen; i++)
-      a[0]+=" ";
+  if ((b.type==ARRAY? b.a.size() : b.s.length()) > 0) {
     a = SAspacesquared(a);
-  }
-  if (b.a.size()+yp > a.length) {
-    String[] na = new String[(b.a.size()+yp)];
-    for (int i = 0; i < (b.a.size()+yp); i++) {
-      na[i] = i < a.length? a[i] : "";
+    if (b.type != ARRAY) {
+      b = toArray(b);
     }
-    a = na;
+    b.a = spacesquared(to1DMLSA(b.a));
+    if (xp < 1) {
+      String ps = "";
+      for (int i = 0; i < 1-xp; i++) {
+        ps+= " ";
+      }
+      for (int i = 0; i < a.length; i++) {
+        a[i] = ps+a[i];
+      }
+      xp=1;
+    }
+    if (yp < 1) {
+      //console.log(a.length);
+      if (a.length > 0) {
+        String[] na = new String[a.length+(1-yp)];
+        for (int i = 0; i < na.length; i++) {
+          if (i < 1-yp) na[i] = "";
+          else na[i] = a[i-(1-yp)];
+        }
+        a = na;
+      }
+      yp=1;
+    }
     a = SAspacesquared(a);
-  }
-  for (int x = 0; x < getLongestXFrom(b); x++) {
-    for (int y = 0; y < b.a.size(); y++) {
-      a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
+    if (a.length==0) a = new String[]{""};
+    //println(getLongestXFrom(b)+"#"+b.a.get(0).s+"#"+xp+"#"+a[0].length());
+    if (getLongestXFrom(b)+xp-1 > a[0].length()) {
+      int gotoLen = (getLongestXFrom(b)+xp)-a[0].length()-1;
+      for (int i = 0; i < gotoLen; i++)
+        a[0]+=" ";
+      a = SAspacesquared(a);
+    }
+    if (b.a.size()+yp > a.length+1) {
+      String[] na = new String[(b.a.size()+yp)-1];
+      for (int i = 0; i < na.length; i++) {
+        na[i] = i < a.length? a[i] : "";
+      }
+      a = na;
+      a = SAspacesquared(a);
+    }
+    for (int x = 0; x < getLongestXFrom(b); x++) {
+      for (int y = 0; y < b.a.size(); y++) {
+        a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
+      }
     }
   }
   return a;
 }
 
 String[] writeExc (String[] a, int xp, int yp, Poppable b, char excludable) {
-  a = SAspacesquared(a);
-  if (b.type != ARRAY) {
-    b = toArray(b);
-  }
-  b.a = spacesquared(to1DMLSA(b.a));
-  if (xp < 1) {
-    String ps = "";
-    for (int i = 0; i < 1-xp; i++) {
-      ps+= " ";
-    }
-    for (int i = 0; i < a.length; i++) {
-      a[i] = ps+a[i];
-    }
-    xp=1;
-  }
-  if (yp < 1) {
-    String[] na = new String[a.length+(1-yp)];
-    for (int i = 0; i < na.length; i++) {
-      if (i < 1-yp) na[i] = "";
-      else na[i] = a[i-(1-yp)];
-    }
-    a = na;
-    yp=1;
-  }
-  a = SAspacesquared(a);
-  if (a.length==0) a = new String[]{""};
-  //println(getLongestXFrom(b)+"#"+b.a.get(0).s+"#"+xp+"#"+a[0].length());
-  if (getLongestXFrom(b)+xp-1 > a[0].length()) {
-    int gotoLen = (getLongestXFrom(b)+xp)-a[0].length()-1;
-    for (int i = 0; i < gotoLen; i++)
-      a[0]+=" ";
+  if ((b.type==ARRAY? b.a.size() : b.s.length()) > 0) {
     a = SAspacesquared(a);
-  }
-  if (b.a.size()+yp > a.length) {
-    String[] na = new String[(b.a.size()+yp)];
-    for (int i = 0; i < (b.a.size()+yp); i++) {
-      na[i] = i < a.length? a[i] : "";
+    if (b.type != ARRAY) {
+      b = toArray(b);
     }
-    a = na;
+    b.a = spacesquared(to1DMLSA(b.a));
+    if (xp < 1) {
+      String ps = "";
+      for (int i = 0; i < 1-xp; i++) {
+        ps+= " ";
+      }
+      for (int i = 0; i < a.length; i++) {
+        a[i] = ps+a[i];
+      }
+      xp=1;
+    }
+    if (yp < 1) {
+      //console.log(a.length);
+      if (a.length > 0) {
+        String[] na = new String[a.length+(1-yp)];
+        for (int i = 0; i < na.length; i++) {
+          if (i < 1-yp) na[i] = "";
+          else na[i] = a[i-(1-yp)];
+        }
+        a = na;
+      }
+      yp=1;
+    }
     a = SAspacesquared(a);
-  }
-  for (int x = 0; x < getLongestXFrom(b); x++) {
-    for (int y = 0; y < b.a.size(); y++) {
-      if (b.a.get(y).s.charAt(x) != excludable)
-        a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
+    if (a.length==0) a = new String[]{""};
+    //println(getLongestXFrom(b)+"#"+b.a.get(0).s+"#"+xp+"#"+a[0].length());
+    if (getLongestXFrom(b)+xp-1 > a[0].length()) {
+      int gotoLen = (getLongestXFrom(b)+xp)-a[0].length()-1;
+      for (int i = 0; i < gotoLen; i++)
+        a[0]+=" ";
+      a = SAspacesquared(a);
+    }
+    if (b.a.size()+yp > a.length+1) {
+      String[] na = new String[(b.a.size()+yp)-1];
+      for (int i = 0; i < na.length; i++) {
+        na[i] = i < a.length? a[i] : "";
+      }
+      a = na;
+      a = SAspacesquared(a);
+    }
+    for (int x = 0; x < getLongestXFrom(b); x++) {
+      for (int y = 0; y < b.a.size(); y++) {
+        if (b.a.get(y).s.charAt(x) != excludable)
+          a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
+      }
     }
   }
   return a;
@@ -1397,6 +1407,9 @@ class Executable extends Preprocessable {
           if (qdata[ptr]==26) {
             push("bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ");
           }
+          if (qdata[ptr]==27) {
+            push("0123456789");
+          }
           if (qdata[ptr]==28) {
             Executable subExec = new Executable(pop(STRING).s, new String[] {}).setParent(this);
             subExec.stack = stack;
@@ -1420,6 +1433,13 @@ class Executable extends Preprocessable {
           ptr+= quirks[qdata[ptr]].length()-1;
         } else {
           //char parsing
+          
+          if (cc=="⁰") {
+            a = tp(stack);
+            stack = ea();
+            push(a);
+          }
+          
           if (cc=="¹") {
             a = pop();
             b = a;
@@ -2583,8 +2603,8 @@ class Executable extends Preprocessable {
           }
           
           if (cc=="∙") {
-            a = pop();
-            b = pop();
+            a = pop(STRING);
+            b = pop(a.type==BIGDECIMAL? STRING : BIGDECIMAL);
             if (((a.type==BIGDECIMAL)&&(b.type==STRING))||((a.type==ARRAY)&&(b.type==BIGDECIMAL))) {
               Poppable t = a;
               a = b;
@@ -2942,6 +2962,13 @@ class Executable extends Preprocessable {
             }
           }
           
+          if (cc=="ο") {
+            a = pop(STRING);
+            ArrayList<Poppable> out = ea();
+            out.add(a);
+            push(out);
+          }
+          
           if (cc=="Ρ") {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL)
@@ -3260,7 +3287,11 @@ class Executable extends Preprocessable {
           
           if (cc=="↔") {
             a = pop(STRING);
-            push(horizMirror(a));
+            if (a.type == BIGDECIMAL) {
+              BigDecimal[] bAR = a.bd.divideAndRemainder(B(2));
+              push(bAR[1].equals(B(1))? bAR[0].add(B(1)) : bAR[0]);
+            } else
+              push(horizMirror(a));
             //a = swapChars(a, '', '');
           }
           if (cc=="↕") {
@@ -4341,9 +4372,9 @@ Poppable vertPalen (Poppable inp, int center, boolean swapChars, boolean extraSp
   }
   if (swapChars) out = vertMirror(tp(out)).a;
   for (int i = 0; i < ssize; i++) {
-    if (center == 1 && i==ssize-1 && inp.a.get(i).type == STRING)
-      out.add(i, tp(inp.a.get(i).s.replace(new RegExp("[,.`']","g"), ":")));
-    else
+    if (center == 1 && i==ssize-1 && inp.a.get(i).type == STRING) {
+      out.add(i, tp(inp.a.get(i).s.replace(new RegExp("[,.`']","g"), ":").replace(new RegExp("[\\\\/]","g"), "X")));
+    } else
       out.add(i, inp.a.get(i));
   }
   return tp(out);

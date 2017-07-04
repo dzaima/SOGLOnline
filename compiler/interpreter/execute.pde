@@ -176,6 +176,9 @@ class Executable extends Preprocessable {
           if (qdata[ptr]==26) {
             push("bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ");
           }
+          if (qdata[ptr]==27) {
+            push("0123456789");
+          }
           if (qdata[ptr]==28) {
             Executable subExec = new Executable(pop(STRING).s, new String[] {}).setParent(this);
             subExec.stack = stack;
@@ -199,6 +202,13 @@ class Executable extends Preprocessable {
           ptr+= quirks[qdata[ptr]].length()-1;
         } else {
           //char parsing
+          
+          if (cc=='⁰') {
+            a = tp(stack);
+            stack = ea();
+            push(a);
+          }
+          
           if (cc=='¹') {
             a = pop();
             b = a;
@@ -1362,8 +1372,8 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='∙') {
-            a = pop();
-            b = pop();
+            a = pop(STRING);
+            b = pop(a.type==BIGDECIMAL? STRING : BIGDECIMAL);
             if (((a.type==BIGDECIMAL)&&(b.type==STRING))||((a.type==ARRAY)&&(b.type==BIGDECIMAL))) {
               Poppable t = a;
               a = b;
@@ -1721,6 +1731,13 @@ class Executable extends Preprocessable {
             }
           }
           
+          if (cc=='ο') {
+            a = pop(STRING);
+            ArrayList<Poppable> out = ea();
+            out.add(a);
+            push(out);
+          }
+          
           if (cc=='Ρ') {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL)
@@ -2039,7 +2056,11 @@ class Executable extends Preprocessable {
           
           if (cc=='↔') {
             a = pop(STRING);
-            push(horizMirror(a));
+            if (a.type == BIGDECIMAL) {
+              BigDecimal[] bAR = a.bd.divideAndRemainder(B(2));
+              push(bAR[1].equals(B(1))? bAR[0].add(B(1)) : bAR[0]);
+            } else
+              push(horizMirror(a));
             //a = swapChars(a, '', '');
           }
           if (cc=='↕') {
