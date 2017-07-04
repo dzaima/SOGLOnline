@@ -40,10 +40,28 @@ void setup() {
     println("written additions");
     saveStrings(outF+"/compiled.pde", new String[]{mainPDE});
     println("Saved compiled.pde");
+    
+    //async-stripped
+    folder = new File(outF);
+    listOfFiles = folder.listFiles();
+    for (File cFile : listOfFiles) {
+      if (cFile.isFile() && !cFile.getName().equals(".git")) {
+        println("copying async-stripped "+ outF+"/"+cFile.getName());
+        String[] fi = loadStrings(outF+"/"+cFile.getName());
+        String[] fo = new String[fi.length];
+        int i = 0;
+        for (String c : fi) {
+          fo[i] = cFile.getName().equals("processing.js")? c : c.replaceAll("async|await", "");
+          i++;
+        }
+        saveStrings(outF+"/comp/"+cFile.getName(), fo);
+      }
+    }
   } catch (Exception e) {
     System.err.println("Error: ");
     e.printStackTrace();
   }
+  
   System.exit(0);
 }
 boolean debug = false;

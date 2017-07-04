@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<head>
+  <link rel="stylesheet" href="style.css">
+</head>
+<html>
+<head>
+    <title>SOGL interpreter</title>
+    <script src="processing.js"></script>
+    <script src="bigDecimal.js"></script>
+</head>
+<body style="background: #f5fff5;">
+  <canvas data-processing-sources="compiled.pde" height=1 width=1></canvas>
+  <center><H1>SOGL interpreter</H1></center>
+  <div id="all">
+    <div id="left">
+      <div id="p" style="width:40%;"><span id="bytecount" style="font-size:12px">0 bytes</span></div><div id="p" style="width:20%;"><center><b>CODE</b></center></div>
+      <textarea id="program" placeholder="Enter code..." spellcheck="false" onclick="setTimeout(updater, 0);" oninput="setTimeout(updater, 0);"></textarea>
+    </div>
+    <div id="right" align="right">
+      <center><b>INPUTS</b></center>
+      <textarea id="inputs" placeholder="Enter inputs in each line" spellcheck="false" style="width:100%"></textarea>
+    </div>
+    <textarea id="output" style="width: 100%; height:300px" placeholder="Output will appear here once some code has been executed" readonly></textarea>
+    <br/>
+    <div id="p" style="width:220px">
+      <button onclick="runClicked()" style="width:47%">run</button>
+      <button onclick="permalink()" style="width:47%; float:right;">permalink</button>
+    </div>
+      <button id="stop" onclick="stopRunning()" style="width:83px;">stop</button>
+      <button id="stepBtn" onclick="step()" style="width:83px;" hidden>step</button>
+      <button id="contBtn" onclick="dCont()" style="width:83px;" hidden>continue</button>
+    <br>
+    <div id="p" style="width:220px">
+      <input type="button" id="loadSOGL" value="load SOGL codepage encoded file" onclick="loadSOGL()"; style="width:100%"></input>
+      <br/>
+    <input type="button" id="saveSOGL" value="save SOGL codepage encoded file" onclick="saveSOGL();" style="width:100%"></input>
+    </div>
+    <div id="p">
+      <input type="file" id="fileinput" accept=".soglbin"/>
+      <br>
+      <input id="debugCheck" type="checkbox" onclick="updateDebugMode()">debug mode</input>
+      <span id="vArrH" hidden><input id="visualizeArrays" type="checkbox" onclick="updateStackViz()" checked>vizualize arrays</input></span>
+      <a id="savedLink"></a>
+    </div>
+  </div>
+  <div id="stackPlace"> </div>
+  <div id="wtest" class="wtest"/>
+  <script>
+    var soglOS = "";
+    var soglOSP = "";
+    var sleepBI = false;
+    var stopProgram = false;
+    var running = false;
+    var cp;
+    var debugMode = 0;
+    var justStepped = false;
+    var bpS, bpE;
+    var ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’";
+    var pobj = document.getElementById("program");
+    var args = location.search.substring(1).split(",");
+    var lastScroll;
+    document.onkeydown = updater;
+    for (var i = 0; i < args.length; i++) {
+      var carg = args[i];
+      if (carg.startsWith("code="))
+        pobj.value = unescape(atob(carg.substring(5).replace(/_/g, "=")));
+      if (carg.startsWith("inputs="))
+        document.getElementById("inputs").value = unescape(atob(carg.substring(7).replace(/_/g, "=")));
+    }
+     function runClicked() {
+      if (!cp) cp = Processing.instances[0];
+      if (running) {
+        stopProgram = true;
+        while (stopProgram) {
+           sleep(50);
+        }
+      }
+      stopProgram = false;
+      soglOS = "";
+      var prog = pobj.value;
+      var inps = document.getElementById("inputs").value;
+      running = true;
+       cp.launchSOGL(prog, inps.split("\n"));
+      document.getElementById("output").value = soglOSP;
+    }
+    function stopRunning() {
+      stopProgram = true;
+    }
+    function updater() {
+      setTimeout (update, 0);
+      setTimeout (update, 10);
+    }
+    function update() {
+      var bytecount = pobj.value.length;
+      var startPos = pobj.selectionStart;
+      var endPos = pobj.selectionEnd;
+      var co = bytecount +" byte"+ (bytecount==1? "" : "s");
+      if (endPos != startPos)
+        co+= " ("+ (endPos-startPos) +" byte"+ (endPos-startPos==1? "" : "s") +" selected)"
+      document.getElementById("bytecount").innerHTML = co;
+      //console.log(startPos+" "+endPos);
+    }
+    
+    function updateDebugMode () {
+      debugMode = document.getElementById("debugCheck").checked? 1 : 0;
+      document.getElementById("stepBtn").hidden = !debugMode;
+      document.getElementById("contBtn").hidden = !debugMode;
+      document.getElementById("vArrH").hidden = !debugMode;
+      outputMode(debugMode? 2 : 0)
+    }
+    
+    function permalink() {
+      var res = location.href.substring(0,location.href.length-location.search.length)+"?";
+      res+= "code="+ (btoa(escape(pobj.value)).replace(/=/g, "_"));
+      var inputs = document.getElementById("inputs").value;
+      if (inputs != "")
+        res+= ",inputs="+ btoa(escape(inputs)).replace(/=/g, "_");
+      document.getElementById("output").value = res;
+    }
+    
+    function saveSOGL() {
+      if (!cp) cp = Processing.instances[0];
+      var link = document.getElementById("savedLink");
+      var prog = pobj.value;
+      link.download = "encoded.soglbin";
+      var progBin = "";
+      for (var i = 0; i < prog.length; i++) {
+        progBin+= String.fromCodePoint(ALLCHARS.indexOf(prog.charAt(i)));
+      }
+      link.href = 'data:text/plain;base64,' + btoa(progBin);
+      link.click();
+    }
+    
+    var fr;
+    function loadSOGL() {
+      var f = document.getElementById('fileinput').files[0];
+      fr = new FileReader();
+      fr.onload = recieved;
+      fr.readAsBinaryString(f);
+    }
+    function recieved() {
+      if (!cp) cp = Processing.instances[0];
+      var progbin = fr.result;
+      var prog = "";
+      for (var i = 0; i < progbin.length; i++) {
+        prog+= ALLCHARS.charAt(progbin.charCodeAt(i));
+      }
+      pobj.value = prog;
+      update();
+    }
+    //https://stackoverflow.com/a/39914235/7528415
+    function sleep (ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+     function currOutput() {
+       sleep(0);
+      cp.readyOutput();
+      document.getElementById("output").value = soglOSP;
+    }
+    function jsmodify (js) {
+      return js.replace(/function execute/g, " function execute")
+               .replace(/function launchSOGLP2\b/g, " function launchSOGLP2")
+               .replace(/function launchSOGL\b/g, " function launchSOGL");
+    }
+    function step () {
+      if (!cp) runClicked();
+      lastScroll = window.pageYOffset;
+      justStepped = true;
+    }
+    function dCont () {
+      if (!cp) runClicked();
+      lastScroll = window.pageYOffset;
+      debugMode = 2;
+      justStepped = true;
+    }
+    var lstack, llastptr, lptr;
+    var charW = 8;
+    var charH = 17;
+    function execFinished (stack, lastptr, ptr) {
+      lstack = stack;
+      llastptr = lastptr;
+      lptr = ptr;
+      var program = document.getElementById("program")
+      program.focus();
+      program.setSelectionRange(lastptr+1, ptr+1);
+      var stackHoriz = false;
+      var stackPlace = document.getElementById("stackPlace");
+      var wtest = document.getElementById("wtest");
+      stackPlace.innerHTML = "";
+      stack.forEach(item=> {
+        if (stackHoriz) {
+          
+        } else {
+          var ce = document.createElement("textarea")
+          ce.value = item.stringRepr(document.getElementById("visualizeArrays").checked)
+          let sval = ce.value.split("\n");
+          let mlen = 0;
+          for (let i = 0; i < sval.length; i++) {
+            if (sval[i].length > mlen) mlen = sval[i].length;
+          }
+          ce.style = "width:"+ (mlen*charW+33) +"px; height:"+ Math.max((sval.length+1)*charH, 70) +"px;vertical-align:top;"//"width:"+ cwidth +"px; height:"+ cheight +"px;vertical-align:top;"//
+          stackPlace.appendChild(ce);
+        }
+      })
+      if (lastScroll) {
+        window.scrollTo(window.pageXOffset, lastScroll);
+        lastScroll = undefined;
+      }
+    }
+    function updateStackViz () {
+      execFinished(lstack, llastptr, lptr);
+    }
+    function outputMode (mode) {
+      document.getElementById("output").style = mode==1? "width: 49%; height:300px" : (mode==2? "width: 100%; height:50px" : "width: 100%; height:300px");
+    }
+    document.addEventListener ("keydown", e=> {
+      if (e.ctrlKey && e.code === "KeyB") {
+        bpS = document.getElementById("program").selectionStart;
+        bpE = document.getElementById("program").selectionEnd;
+      }
+      //console.log(e.code);
+      if (e.ctrlKey && e.code === "Enter") {
+        runClicked();
+      }
+    });
+    
+    update();
+  </script>
+</body>
+</html>
