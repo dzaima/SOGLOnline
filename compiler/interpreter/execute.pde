@@ -332,6 +332,7 @@ class Executable extends Preprocessable {
             if (a.type==STRING) {
               Poppable t = a;
               a = pop(ARRAY);
+              if (a.type != ARRAY) a = tp(chop(a));
               b = t;
               useStrings = true;
             }
