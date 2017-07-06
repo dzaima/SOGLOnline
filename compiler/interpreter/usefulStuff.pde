@@ -247,6 +247,48 @@ Poppable vectorize (Poppable inp, Vo rn) {
   }
   return tp(out);
 }
+Poppable sort(Poppable ts) {
+  if (ts.type==BIGDECIMAL) {
+    return tp("");
+  } else if (ts.type==STRING) {
+    char[] sorted = ts.s.toCharArray();
+    Arrays.sort(sorted);
+    return tp(new String(sorted));
+  } else {
+    ArrayList<Poppable> current = ea();
+    ArrayList<Poppable> out = ea();
+    for (Poppable c : ts.a) {
+      if (current.size() == 0 || current.get(current.size()-1).type == c.type) {
+        if (current.size() > 0 && current.get(current.size()-1).type == ARRAY) {
+          out.add(sort(c));
+        } else 
+          current.add(c);
+      } else {
+        Collections.sort(current, new Comparator<Poppable>() {
+          public int compare(Poppable o1, Poppable o2) {
+              return o1.compareTo(o2);
+          }
+        });
+        for (Poppable c2 : current) {
+          out.add(c2);
+        }
+        current = ea();
+        current.add(c);
+      }
+    }
+    if (current.size() > 0) {
+      Collections.sort(current, new Comparator<Poppable>() {
+        public int compare(Poppable o1, Poppable o2) {
+            return o1.compareTo(o2);
+        }
+      });
+      for (Poppable c2 : current) {
+        out.add(c2);
+      }
+    }
+    return tp(out);
+  }
+}
 /* template for vectorizing functions
 Poppable vf (Poppable inp) {
   if (inp.type==STRING) 

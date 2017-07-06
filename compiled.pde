@@ -1,4 +1,5 @@
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>// //<>//
+import java.util.Arrays; //<>// //<>// //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
@@ -218,6 +219,16 @@ class StringBuilder {
     return this;
   }
 }
+class Collections {
+  Object sort(Object arr, Comparator comp) {
+    jsarr = arr.toArray();
+    jsarr.sort((a,b)=>comp.compare(a,b));
+    out = ea();
+    for (ct : jsarr) out.add(ct);
+    return out;
+  }
+}
+class Comparator(){}
 void setup(){size(1,1);}void launchSOGLP2() {
   try {
     if (args == null)
@@ -3494,6 +3505,11 @@ class Executable extends Preprocessable {
             push(out);
           }
           
+          if (cc=="□") {
+            a = pop(ARRAY);
+            push(sort(a));
+          }
+          
           if (cc=="⌠") {
             a = nI();
             if (a.type==BIGDECIMAL) {
@@ -3766,6 +3782,11 @@ class Poppable {
   String stringRepr(boolean multilineArrays) {
     if (type == ARRAY && multilineArrays) return toMLStr(true);
     return sline(true);
+  }
+  int compareTo(Object cto) {
+    Poppable p = (Poppable) cto;
+    if (type==BIGDECIMAL && p.type==BIGDECIMAL) return bd.compareTo(p.bd);
+    return s.localeCompare(p.s);
   }
 }
 
@@ -4425,6 +4446,48 @@ Poppable vectorize (Poppable inp, Vo rn) {
     out.add(vectorize(c, rn));
   }
   return tp(out);
+}
+Poppable sort(Poppable ts) {
+  if (ts.type==BIGDECIMAL) {
+    return tp("");
+  } else if (ts.type==STRING) {
+    char[] sorted = ts.s.toCharArray();
+    sorted.sort();
+    return tp(join(sorted, ""));
+  } else {
+    ArrayList<Poppable> current = ea();
+    ArrayList<Poppable> out = ea();
+    for (Poppable c : ts.a) {
+      if (current.size() == 0 || current.get(current.size()-1).type == c.type) {
+        if (current.size() > 0 && current.get(current.size()-1).type == ARRAY) {
+          out.add(sort(c));
+        } else 
+          current.add(c);
+      } else {
+        current = new Collections().sort(current, new Comparator<Poppable>() {
+          public int compare(Poppable o1, Poppable o2) {
+              return o1.compareTo(o2);
+          }
+        });
+        for (Poppable c2 : current) {
+          out.add(c2);
+        }
+        current = ea();
+        current.add(c);
+      }
+    }
+    if (current.size() > 0) {
+      current = new Collections().sort(current, new Comparator<Poppable>() {
+        public int compare(Poppable o1, Poppable o2) {
+            return o1.compareTo(o2);
+        }
+      });
+      for (Poppable c2 : current) {
+        out.add(c2);
+      }
+    }
+    return tp(out);
+  }
 }
 /* template for vectorizing functions
 Poppable vf (Poppable inp) {

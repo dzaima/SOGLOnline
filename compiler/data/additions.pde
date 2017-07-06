@@ -178,3 +178,13 @@ class StringBuilder {
     return this;
   }
 }
+class Collections {
+  Object sort(Object arr, Comparator comp) {
+    jsarr = arr.toArray();
+    jsarr.sort((a,b)=>comp.compare(a,b));
+    out = ea();
+    for (ct : jsarr) out.add(ct);
+    return out;
+  }
+}
+class Comparator(){}

@@ -2263,6 +2263,11 @@ class Executable extends Preprocessable {
             push(out);
           }
           
+          if (cc=='□') {
+            a = pop(ARRAY);
+            push(sort(a));
+          }
+          
           if (cc=='⌠') {
             a = nI();
             if (a.type==BIGDECIMAL) {

@@ -169,4 +169,9 @@ class Poppable {
     if (type == ARRAY && multilineArrays) return toMLStr(true);
     return sline(true);
   }
+  int compareTo(Object cto) {
+    Poppable p = (Poppable) cto;
+    if (type==BIGDECIMAL && p.type==BIGDECIMAL) return bd.compareTo(p.bd);
+    return s.localeCompare(p.s);
+  }
 }
