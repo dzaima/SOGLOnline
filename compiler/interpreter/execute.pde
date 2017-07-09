@@ -494,7 +494,8 @@ class Executable extends Preprocessable {
             b = pop(BIGDECIMAL);
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL && b.type==BIGDECIMAL) {
-              push (a.bd.remainder(b.bd));
+              BigDecimal nmod = a.bd.remainder(b.bd);
+              push (nmod.compareTo(B(0))<0? nmod.add(b.bd) : nmod);
             }
           }
           
@@ -1575,21 +1576,26 @@ class Executable extends Preprocessable {
           }
           if (cc=='θ') {
             a = pop(STRING);
-            String curr = "";
-            ArrayList<Poppable> out = ea();
-            int count = a.s.length();
-            for (int i = 0; i < count; i++) {
-              if (a.s.charAt(0)==' ') {
-                out.add(new Poppable(curr));
-                curr = "";
-              } else {
-                curr+=a.s.charAt(0);
-              }
-              a.s = a.s.substring(1);
+            if (a.type == BIGDECIMAL) {
+              push (a.bd.abs());
             }
-            if (!curr.equals(""))
-              out.add(new Poppable(curr));
-            push(out);
+            if (a.type == STRING) {
+              String curr = "";
+              ArrayList<Poppable> out = ea();
+              int count = a.s.length();
+              for (int i = 0; i < count; i++) {
+                if (a.s.charAt(0)==' ') {
+                  out.add(new Poppable(curr));
+                  curr = "";
+                } else {
+                  curr+=a.s.charAt(0);
+                }
+                a.s = a.s.substring(1);
+              }
+              if (!curr.equals(""))
+                out.add(new Poppable(curr));
+              push(out);
+            }
           }
           
           if (cc=='Ι') {
