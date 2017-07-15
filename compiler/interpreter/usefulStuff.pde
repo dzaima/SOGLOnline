@@ -14,6 +14,20 @@ String spaceupStr (String s, int l) {
     s+=" ";
   return s;
 }
+String repeat (String tor, BigDecimal count) {
+  String res = "";
+  for (int i = 0; i < count.intValue(); i++) {
+    res += tor;
+  }
+  return res;
+}
+String repeat (String tor, int count) {
+  String res = "";
+  for (int i = 0; i < count; i++) {
+    res += tor;
+  }
+  return res;
+}
 ArrayList<Poppable> spacesquared(ArrayList<Poppable> arr) {
   ArrayList<Poppable> res = new ArrayList<Poppable>();
   int l = 0;

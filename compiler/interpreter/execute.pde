@@ -2196,6 +2196,34 @@ class Executable extends Preprocessable {
             push("_");
           }
           
+          if (cc=='╚') {
+            a = pop(BIGDECIMAL);
+            if (a.type==BIGDECIMAL) {
+              a = tp(repeat("/", a.bd));
+            }
+            if (a.type==STRING) {
+              ArrayList<Poppable> out = ea();
+              for (int i = 0; i < a.s.length(); i++) {
+                out.add(0, tp(repeat(" ", i)+a.s.charAt(i)));
+              }
+              push(spacesquared(out));
+            }
+          }
+          
+          if (cc=='╝') {
+            a = pop(BIGDECIMAL);
+            if (a.type==BIGDECIMAL) {
+              a = tp(repeat("\\", a.bd));
+            }
+            if (a.type==STRING) {
+              ArrayList<Poppable> out = ea();
+              for (int i = 0; i < a.s.length(); i++) {
+                out.add(tp(repeat(" ", i)+a.s.charAt(i)));
+              }
+              push(spacesquared(out));
+            }
+          }
+          
           if (cc=='░') {
             clearOutput();
           }

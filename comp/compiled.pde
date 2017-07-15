@@ -1,5 +1,5 @@
-import java.util.Arrays; //<>// //<>// //<>// //<>//
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>//
+import java.util.Arrays; //<>// //<>// //<>// //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
@@ -3438,6 +3438,34 @@ class Executable extends Preprocessable {
             push("_");
           }
           
+          if (cc=="╚") {
+            a = pop(BIGDECIMAL);
+            if (a.type==BIGDECIMAL) {
+              a = tp(repeat("/", a.bd));
+            }
+            if (a.type==STRING) {
+              ArrayList<Poppable> out = ea();
+              for (int i = 0; i < a.s.length(); i++) {
+                out.add(0, tp(repeat(" ", i)+a.s.charAt(i)));
+              }
+              push(spacesquared(out));
+            }
+          }
+          
+          if (cc=="╝") {
+            a = pop(BIGDECIMAL);
+            if (a.type==BIGDECIMAL) {
+              a = tp(repeat("\\", a.bd));
+            }
+            if (a.type==STRING) {
+              ArrayList<Poppable> out = ea();
+              for (int i = 0; i < a.s.length(); i++) {
+                out.add(tp(repeat(" ", i)+a.s.charAt(i)));
+              }
+              push(spacesquared(out));
+            }
+          }
+          
           if (cc=="░") {
             clearOutput();
           }
@@ -4219,6 +4247,20 @@ String spaceupStr (String s, int l) {
   while (s.length()<l)
     s+=" ";
   return s;
+}
+String repeat (String tor, BigDecimal count) {
+  String res = "";
+  for (int i = 0; i < count.intValue(); i++) {
+    res += tor;
+  }
+  return res;
+}
+String repeat (String tor, int count) {
+  String res = "";
+  for (int i = 0; i < count; i++) {
+    res += tor;
+  }
+  return res;
 }
 ArrayList<Poppable> spacesquared(ArrayList<Poppable> arr) {
   ArrayList<Poppable> res = new ArrayList<Poppable>();
