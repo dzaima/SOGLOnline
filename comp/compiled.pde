@@ -229,6 +229,10 @@ class Collections {
   }
 }
 class Comparator(){}
+
+double log (double inp) {
+  return Math.log10(inp);
+}
 void setup(){size(1,1);}void launchSOGLP2() {
   try {
     if (args == null)
