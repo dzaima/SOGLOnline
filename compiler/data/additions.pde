@@ -188,7 +188,3 @@ class Collections {
   }
 }
 class Comparator(){}
-
-double log (double inp) {
-  return Math.log10(inp);
-}

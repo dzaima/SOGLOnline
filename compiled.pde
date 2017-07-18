@@ -229,10 +229,6 @@ class Collections {
   }
 }
 class Comparator(){}
-
-double log (double inp) {
-  return Math.log10(inp);
-}
 void setup(){size(1,1);}void launchSOGLP2() {
   try {
     if (args == null)
@@ -2989,20 +2985,20 @@ class Executable extends Preprocessable {
           }
           
           if (cc=="Τ") {
-            a = pop();
+            a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL)
-              push(log(a.bd.floatValue()));
+              push(B(Math.log(a.bd.doubleValue())/Math.log(10)));
           }
           
           if (cc=="τ") {
-            a = pop();
+            a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL)
-              push(log(a.bd.floatValue())/log(2));
+              push(B(Math.log(a.bd.doubleValue())/Math.log(2)));
           }
           
           if (cc=="Υ") {
-            b = pop();
-            a = pop();
+            b = pop(BIGDECIMAL);
+            a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL && b.type==BIGDECIMAL)
               push(B(Math.log(a.bd.doubleValue())/Math.log(b.bd.doubleValue())));
           }
