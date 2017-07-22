@@ -1465,6 +1465,18 @@ class Executable extends Preprocessable {
             push(p.charAt(ptr-1)+""+p.charAt(ptr));
           }
           
+          if (cc=='α') {
+            Poppable v = new Poppable(vars[0], 0, this);
+            a = pop(STRING);
+            if (v.type==BIGDECIMAL && v.bd.equals(ZERO)) v = a;
+            if (v.type==ARRAY) v.a.add(a);
+            else if (a.type==STRING || b.type==STRING) {
+              v.type = STRING;
+              v.s+= a.s;
+            } else v.bd = v.bd.add(a.bd);
+            setvar(0, a);
+          }
+          
           if (cc=='β') {
             Poppable c = pop(STRING);
             b = pop(STRING);
@@ -1648,7 +1660,7 @@ class Executable extends Preprocessable {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL) {
               ArrayList<Poppable> out = ea();
-              for (BigDecimal i = B(1); i.compareTo(a.bd)!=1; i = i.add(B(1))) //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+              for (BigDecimal i = B(1); i.compareTo(a.bd)!=1; i = i.add(B(1))) //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
                 if (a.bd.divideAndRemainder(i)[1].equals(B(0)))
                   out.add(new Poppable(i));
               push(out);
@@ -2174,7 +2186,7 @@ class Executable extends Preprocessable {
             }
             if (a.type==STRING) {
               if (b.type==ARRAY) {
-                int maxlen = 0; //<>// //<>//
+                int maxlen = 0; //<>// //<>// //<>//
                 for (Poppable c : b.a) 
                   if (c.s.length()>maxlen) 
                     maxlen = c.s.length();

@@ -1152,6 +1152,9 @@
     P.toBigDecimal = function () {
         return this;
     }
+    P.movePointLeft = function (inp) {
+        return this.divide(new Big("10").pow(inp));
+    }
 
     Big = bigFactory();
 
