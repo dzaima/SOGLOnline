@@ -49,6 +49,15 @@
   <div id="wtest" class="wtest"/>
   <script>
     var lastPremalink;
+    var args = location.search.substring(1).split(",");
+    var pobj = document.getElementById("program");
+    for (var i = 0; i < args.length; i++) {
+      var carg = args[i];
+      if (carg.startsWith("code="))
+        pobj.value = unescape(atob(carg.substring(5).replace(/_/g, "=")));
+      if (carg.startsWith("inputs="))
+        document.getElementById("inputs").value = unescape(atob(carg.substring(7).replace(/_/g, "=")));
+    }
     function compmode() {
       permalink();
       window.location = lastPremalink.replace(/(index\.html)?\?/, "comp/index.html?")
@@ -74,17 +83,8 @@
     var justStepped = false;
     var bpS, bpE;
     var ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’";
-    var pobj = document.getElementById("program");
-    var args = location.search.substring(1).split(",");
     var lastScroll;
     document.onkeydown = updater;
-    for (var i = 0; i < args.length; i++) {
-      var carg = args[i];
-      if (carg.startsWith("code="))
-        pobj.value = unescape(atob(carg.substring(5).replace(/_/g, "=")));
-      if (carg.startsWith("inputs="))
-        document.getElementById("inputs").value = unescape(atob(carg.substring(7).replace(/_/g, "=")));
-    }
     async function runClicked() {
       if (!cp) cp = Processing.instances[0];
       if (running) {
