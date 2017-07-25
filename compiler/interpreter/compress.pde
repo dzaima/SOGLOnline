@@ -5,6 +5,7 @@ ArrayList<int[]> compress (String s, boolean clear, int method) {
    1 - printable ASCII chars
    2 - english
    3 - box
+   4 - alphabet + custom string
    */
   if (clear) toCompress = new ArrayList<int[]>();
   //println("###STARTING "+method);

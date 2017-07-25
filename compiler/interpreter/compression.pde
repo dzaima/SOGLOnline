@@ -5,6 +5,7 @@ String compressChars = "⁰¹²³⁴⁵⁶⁷⁸\t⁹±∑«»æÆø‽§°¦‚
 String compressableChars = "ZQJKVBPYGFWMUCLDRHSNIATEXOzqjkvbpygfwmucldrhsniatexo~!$%&=?@^()<>[]{};:9876543210#*\"'`.,+\\/_|-\nŗ ";
 int[] presetNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,25,36,50,64,75,99,100,101,128,196,200,255,256,257};
 String[] presets = {"0","1","2","3","4","5","6","7","8","9","L","LI","6«","7«","8«","9«","L«","M¼","6²","M»","N¼","M¾","MH","M","MI","N»","N¾","M«","NH","N","NI"};
+char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 String[] dict;
 /*RMP5*/
 BigInteger fromBase (int base, byte[] num) {
@@ -42,6 +43,9 @@ byte read (int base) {
   decompressable = temp[0];
   return o;
 }
+//void addToDecomp (BigInteger num, BigInteger base) {
+//  decompressable = decompressable.multiply(base).add(num);
+//}
 int readInt (int base) {
   int o;
   BigInteger[] temp = decompressable.divideAndRemainder(BI(base));

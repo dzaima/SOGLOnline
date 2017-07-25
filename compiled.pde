@@ -603,6 +603,7 @@ ArrayList<int[]> compress (String s, boolean clear, int method) {
    1 - printable ASCII chars
    2 - english
    3 - box
+   4 - alphabet + custom string
    */
   if (clear) toCompress = new ArrayList<int[]>();
   //println("###STARTING "+method);
@@ -952,6 +953,7 @@ String compressChars = "⁰¹²³⁴⁵⁶⁷⁸\t⁹±∑«»æÆø‽§°¦‚
 String compressableChars = "ZQJKVBPYGFWMUCLDRHSNIATEXOzqjkvbpygfwmucldrhsniatexo~!$%&=?@^()<>[]{};:9876543210#*\"'`.,+\\/_|-\nŗ ";
 int[] presetNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,25,36,50,64,75,99,100,101,128,196,200,255,256,257};
 String[] presets = {"0","1","2","3","4","5","6","7","8","9","L","LI","6«","7«","8«","9«","L«","M¼","6²","M»","N¼","M¾","MH","M","MI","N»","N¾","M«","NH","N","NI"};
+char[] alphabet = {"a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 String[] dict;
 /*
 BigInteger fromBase (int base, byte[] num) {
@@ -1003,6 +1005,9 @@ byte read (int base) {
   decompressable = temp[0];
   return o;
 }
+//void addToDecomp (BigInteger num, BigInteger base) {
+//  decompressable = decompressable.multiply(base).add(num);
+//}
 int readInt (int base) {
   int o;
   BigInteger[] temp = decompressable.divideAndRemainder(BI(base));
@@ -1117,27 +1122,44 @@ String decompb(BigInteger inpbi) {
   pos = 0;
   decompressable = inpbi;
   String out = "";
-  byte last = -1;
+  int last = -1;
   int lastD = -1;
+  boolean nextIncludeAlphabet = false;
   while(!decompressable.equals(BI(0))) {
-    byte eq = read(8);
-    if (eq==0 || eq==7) {
-      int length = read(eq==0?32:128)+(eq==0?4:36);
+    int eq = -1;
+    if (!nextIncludeAlphabet) eq = read(8);
+    if (nextIncludeAlphabet || eq==0 || eq==7) {
+      if (nextIncludeAlphabet) {
+        eq = 7;
+      }
+      int length = read(nextIncludeAlphabet? 512 : (eq==0?32:128))+(eq==0?4:36);
+      
       lastD = length;
-      if(logDecompressInfo) System.err.print("custom dictionary "+(eq==7?"long ":"")+"string with characters [");
+      if(logDecompressInfo) System.err.print("custom dictionary "+(nextIncludeAlphabet? "alphabet " : (eq==7?"long ":""))+"string with characters [");
       
       ArrayList<Character> CU = new ArrayList<Character>(); //chars used
       int cc = read(compressableChars.length());
       CU.add(compressableChars.charAt(cc));
       if (logDecompressInfo) System.err.print("\""+(compressableChars.charAt(cc)+"").replace("\n", "\\n")+"\"");
-      int base = 97-cc;
+      int base = compressableChars.length()-cc;
       while (base > 1) {
         cc = read(base);
         if (cc==base-1) break;
-        CU.add(compressableChars.charAt(97-base+cc+1));
-        if (logDecompressInfo) System.err.print(", \""+compressableChars.charAt(97-base+cc+1)+"\"");
+        CU.add(compressableChars.charAt(compressableChars.length()-base+cc+1));
+        if (logDecompressInfo) System.err.print(", \""+compressableChars.charAt(compressableChars.length()-base+cc+1)+"\"");
         base-= cc+1;
       }
+      if (nextIncludeAlphabet) {
+        for (Character c : alphabet) if (CU.contains(c)) CU.remove(c); else CU.add(c);
+        ArrayList<Character> CU2 = new ArrayList<Character>();
+        for (int i = 0; i < compressableChars.length(); i++) {
+          Character c = compressableChars.charAt(i);
+          if (CU.contains(c))
+            CU2.add(c);
+        }
+        CU = CU2;
+      }
+      //println(CU);
       length+=CU.size();
       if (logDecompressInfo) System.err.print("] and length "+length+": \"");
       //String bin = getb(ceil(log(charAm)*length/log(2)));
@@ -1149,6 +1171,7 @@ String decompb(BigInteger inpbi) {
       //while (tout.length()<length) tout = CU.get(0)+tout;
       if (logDecompressInfo) System.err.println(tout+"\"");
       out+=tout;
+      nextIncludeAlphabet = false;
     }
     if (eq==2) {
       if (dict == null) dict = loadStrings("words3.0_wiktionary.org-Frequency_lists.txt");
@@ -1179,7 +1202,7 @@ String decompb(BigInteger inpbi) {
         i++;
       }
       int length = read(eq==5?64:32)+(eq==5?34:2)+CU.size();
-      if(logDecompressInfo) for (String s : CU) print ("\""+(s.equals("\n")?"\\n":s)+"\""+(s==CU.get(CU.size()-1)?", and "+length+" chars \"":", "));
+      if(logDecompressInfo) for (String s : CU) System.err.print ("\""+(s.equals("\n")?"\\n":s)+"\""+(s==CU.get(CU.size()-1)?", and "+length+" chars \"":", "));
       lastD = length;
       //println(bin);
       int[] based = readArr(CU.size(),length);//toBase(CU.size(),fromBase(2,getb(ceil(log(CU.size())*length/log(2)))));
@@ -1207,6 +1230,12 @@ String decompb(BigInteger inpbi) {
       }
       if(logDecompressInfo) System.err.println (length + " characters: \""+tout+"\"");
       out+= tout;
+    }
+    if (eq==6) {
+      int bp = read(8);
+      if(bp == 1) {
+        nextIncludeAlphabet = true;
+      }
     }
     last = eq;
   }
@@ -2902,7 +2931,7 @@ class Executable extends Preprocessable {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL) {
               ArrayList<Poppable> out = ea();
-              for (BigDecimal i = B(1); i.compareTo(a.bd)!=1; i = i.add(B(1))) //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+              for (BigDecimal i = B(1); i.compareTo(a.bd)!=1; i = i.add(B(1))) //<>// //<>// //<>// //<>// //<>// //<>// //<>//
                 if (a.bd.divideAndRemainder(i)[1].equals(B(0)))
                   out.add(new Poppable(i));
               push(out);
@@ -3428,7 +3457,7 @@ class Executable extends Preprocessable {
             }
             if (a.type==STRING) {
               if (b.type==ARRAY) {
-                int maxlen = 0; //<>// //<>// //<>//
+                int maxlen = 0; //<>// //<>//
                 for (Poppable c : b.a) 
                   if (c.s.length()>maxlen) 
                     maxlen = c.s.length();
