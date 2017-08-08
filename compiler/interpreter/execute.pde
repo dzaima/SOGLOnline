@@ -112,7 +112,7 @@ class Executable extends Preprocessable {
             if (pushable.type==STRING) {
               String toPush = pushable.s;
               if (pushable.s.contains("ŗ")) {
-                a = pop();
+                a = pop(STRING);
                 if (a.type==STRING)
                   toPush = pushable.s.replace("ŗ",a.s);
                 else if (a.type==BIGDECIMAL)
@@ -661,12 +661,8 @@ class Executable extends Preprocessable {
           if (cc=='@') push(" ");
   
           if (cc==';') {
-            if (stack.size() == 0)
-              push(nI());
-            if (stack.size() == 1) 
-              push(nI());
-            a = pop();
-            b = pop();
+            a = pop(BIGDECIMAL);
+            b = pop(BIGDECIMAL);
             push(a);
             push(b);
           }
@@ -828,7 +824,7 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='R') {
-            a = pop();
+            a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL) push (char(a.bd.intValue())+"");
             ArrayList<Poppable> res = ea();
             if (a.type==STRING) {
@@ -932,7 +928,7 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='_') {
-            a = pop();
+            a = pop(ARRAY);
             if (a.type==ARRAY) {
               for (int i = 0; i < a.a.size(); i++) {
                 push(a.a.get(i));
@@ -982,8 +978,8 @@ class Executable extends Preprocessable {
           
           if (cc=='h') {
             a = pop(STRING);
-            b = pop();
-            Poppable c = pop();
+            b = pop(a.type);
+            Poppable c = pop(b.type);
             push(b);
             push(c);
             push(a);
@@ -1160,8 +1156,8 @@ class Executable extends Preprocessable {
           }
   
           if (cc=='x') {
-            pop();
-            pop();
+            pop(STRING);
+            pop(STRING);
           }
   
           if (cc=='z')
@@ -1384,17 +1380,17 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='ʹ') {
-            a=pop();
+            a=pop(BIGDECIMAL);
             push (a.bd.toBigInteger().isProbablePrime(1000));
           }
           
           if (cc=='⁽') {
-            a = pop();
+            a = pop(STRING);
             push((a.s.charAt(0)+"").toUpperCase()+a.s.substring(1));
           }
           
           if (cc=='⁾') {
-            a = pop();
+            a = pop(STRING);
             if (a.type==STRING) {
               String s = a.s;
               boolean nextUppercase = true;
@@ -1517,7 +1513,7 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='Δ') {
-            a = pop();
+            a = pop(BIGDECIMAL);
             if (a.type==STRING) {
               //should be expanded
               String o = printableAscii.substring(0, printableAscii.indexOf(a.s)+1);
@@ -1532,7 +1528,7 @@ class Executable extends Preprocessable {
             }
           }
           if (cc=='δ') {
-            a = pop();
+            a = pop(BIGDECIMAL);
             if (a.type==STRING) {
               String o = printableAscii.substring(0, printableAscii.indexOf(a.s));
               push(o);
@@ -1553,7 +1549,7 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='ζ') {
-            a = pop();
+            a = pop(STRING);
             if (a.type==STRING) {
               push(a.s.length() > 0? a.s.charAt(0) : 0);
             }
@@ -1616,8 +1612,8 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='ι') {
-            b = pop();
-            a = pop();
+            b = pop(STRING);
+            a = pop(STRING);
             push (b);
           }
           
@@ -1651,7 +1647,7 @@ class Executable extends Preprocessable {
           
           if (cc=='κ') {
             b = pop(BIGDECIMAL);
-            a = pop(a.type);
+            a = pop(b.type);
             if (a.type==BIGDECIMAL&b.type==BIGDECIMAL)
               push(b.bd.subtract(a.bd));
           }
@@ -1703,7 +1699,7 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='Ο') {
-            Poppable c = pop();
+            Poppable c = pop(STRING);
             b = pop(c.type);
             a = pop(BIGDECIMAL);
             BigDecimal res = a.bd;
@@ -1750,7 +1746,7 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='ρ') {
-            a = pop();
+            a = pop(STRING);
             push(new StringBuilder(a.s).reverse().toString().equals(a.s));
           }
           
@@ -2037,13 +2033,13 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='¼') {
-            a = pop();
+            a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL)
               push (a.bd.multiply(B(1)).divide(B(4)));
           }
           
           if (cc=='¾') {
-            a = pop();
+            a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL)
               push (a.bd.multiply(B(3)).divide(B(4)));
           }
@@ -2154,8 +2150,8 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='┼') {
-            b = pop();
-            a = pop();
+            b = pop(STRING);
+            a = pop(STRING);
             if (a.type==ARRAY) {
               if (b.type==STRING) {
                 int maxlen = 0;
