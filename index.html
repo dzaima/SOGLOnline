@@ -29,8 +29,6 @@
     </div>
       <button id="stop" onclick="stopRunning()" style="width:83px;">stop</button>
       <button id="compmode" onclick="compmode()" style="width:134px;">compatibility mode</button>
-      <button id="stepBtn" onclick="step()" style="width:83px;" hidden>step</button>
-      <button id="contBtn" onclick="dCont()" style="width:83px;" hidden>continue</button>
     <br>
     <div id="p" style="width:220px">
       <input type="button" id="loadSOGL" value="load SOGL codepage encoded file" onclick="loadSOGL()"; style="width:100%"></input>
@@ -38,9 +36,13 @@
     <input type="button" id="saveSOGL" value="save SOGL codepage encoded file" onclick="saveSOGL();" style="width:100%"></input>
     </div>
     <div id="p">
+      <button id="topost" onclick="postify()" style="width:80px;">postify</button>
+      <button id="toCMC" onclick="CMCify()" style="width:60px;">CMCify</button>
       <input type="file" id="fileinput" accept=".soglbin"/>
       <br>
       <input id="debugCheck" type="checkbox" onclick="updateDebugMode()">debug mode</input>
+      <button id="stepBtn" onclick="step()" style="width:83px;" hidden>step</button>
+      <button id="contBtn" onclick="dCont()" style="width:83px;" hidden>continue</button>
       <span id="vArrH" hidden><input id="visualizeArrays" type="checkbox" onclick="updateStackViz()" checked>vizualize arrays</input></span>
       <a id="savedLink"></a>
     </div>
@@ -70,6 +72,17 @@
         res+= ",inputs="+ btoa(escape(inputs)).replace(/=/g, "_");
       lastPremalink = res;
       document.getElementById("output").value = res;
+    }
+    function postify() {
+      permalink();
+      let link = `\n\n[Try it Here!](${output.value})`;
+      output.value = `#SOGL, ${program.value.length} byte${program.value.length===1? "" : "s"}`;
+      for (var cs of program.value.split("\n")) output.value+= "\n    "+cs;
+      output.value+= link;
+    }
+    function CMCify() {
+      permalink();
+      output.value = `SOGL, ${program.value.length} byte${program.value.length===1? "" : "s"}: [\`${program.value.replace(/\n/g, "\\n")}\`](${output.value})`;
     }
   </script>
   <script>
