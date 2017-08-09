@@ -1155,6 +1155,9 @@
     P.movePointLeft = function (inp) {
         return this.divide(new Big("10").pow(inp));
     }
+    P.signum = function () {
+        return Math.sign(this.floatValue());
+    }
 
     Big = bigFactory();
 
