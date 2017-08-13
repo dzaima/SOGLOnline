@@ -1,5 +1,5 @@
-import java.util.Arrays; //<>// //<>// //<>// //<>// //<>//
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>// //<>//
+import java.util.Arrays; //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
@@ -1776,77 +1776,49 @@ class Executable extends Preprocessable {
           }
           
           if (cc=="*") {
-            if (stack.size()==0) {
-              b=pop(BIGDECIMAL);
-              a=pop(BIGDECIMAL);
-              push(a);
-              push(b);
-              push(a.bd.multiply(b.bd));
-            } else {
-              a = pop();
-              if (stack.size()==0) {
-                b = pop(BIGDECIMAL);
-                Poppable t = a;
-                a=b;
-                b=t;
-              } else
-                b = pop();
-              if (((a.type==BIGDECIMAL)&&(b.type==STRING))||((a.type==ARRAY)&&(b.type==BIGDECIMAL))) {
-                Poppable t = a;
-                a = b;
-                b = t;
+            b = pop(BIGDECIMAL);
+            a = pop(BIGDECIMAL);
+            if ((a.type==BIGDECIMAL && b.type==STRING) || (a.type==ARRAY && b.type==BIGDECIMAL)) {
+              Poppable t = a;
+              a = b;
+              b = t;
+            }
+            if (a.type==BIGDECIMAL && b.type==BIGDECIMAL) push(a.bd.multiply(b.bd)); 
+            if (a.type==STRING && b.type==BIGDECIMAL) {
+              String res = "";
+              for (long i = 0; i < Math.round(b.bd.doubleValue()); i++) {
+                res+=a.s;
               }
-              if (a.type==BIGDECIMAL&&b.type==BIGDECIMAL) push(a.bd.multiply(b.bd)); 
-              if ((a.type==STRING)&&(b.type==BIGDECIMAL)) {
-                String res = "";
-                for (long i = 0; i < Math.round(b.bd.doubleValue()); i++) {
-                  res+=a.s;
-                }
-                push(res);
+              push(res);
+            }
+            if ((a.type==BIGDECIMAL)&&(b.type==ARRAY)) {
+              String rep = "";
+              for (int j = 0; j < a.bd.intValue(); j++) {
+                rep+= "$1";
               }
-              if ((a.type==BIGDECIMAL)&&(b.type==ARRAY)) {
-                String rep = "";
-                for (int j = 0; j < a.bd.intValue(); j++) {
-                  rep+= "$1";
-                }
-                push(regexReplace(b, "(.)", rep));
-              }
+              push(regexReplace(b, "(.+)", rep));
             }
           }
   
           if (cc=="+") {
-            if (stack.size()==0) {
-              b=pop(BIGDECIMAL);
-              a=pop(BIGDECIMAL);
-              push(a);
+            b = pop(BIGDECIMAL);
+            a = pop(b.type);
+            if (a.type==BIGDECIMAL&b.type==BIGDECIMAL)push(a.bd.add(b.bd)); 
+            else if ((a.type==BIGDECIMAL|a.type==STRING)&(b.type==BIGDECIMAL|b.type==STRING)) push(b.s+a.s);
+            else if (a.type!=ARRAY && b.type==ARRAY) {
+              b.a.add(a);
               push(b);
-              push(a.bd.add(b.bd));
-            } else {
-              a = pop();
-              if (stack.size()==0) {
-                if (a.type==BIGDECIMAL)
-                  b = pop(BIGDECIMAL);
-                else
-                  b = pop(STRING);
-              } else
-                b = pop();
-              if (a.type==BIGDECIMAL&b.type==BIGDECIMAL)push(a.bd.add(b.bd)); 
-              else if ((a.type==BIGDECIMAL|a.type==STRING)&(b.type==BIGDECIMAL|b.type==STRING)) push(b.s+a.s);
-              else if (a.type!=ARRAY && b.type==ARRAY) {
-                b.a.add(a);
-                push(b);
-              } else if (a.type==ARRAY && b.type!=ARRAY) {
-                ArrayList<Poppable> o = ea();
-                o.add(b);
-                for (int i = 0; i < a.a.size(); i++)
-                  o.add(a.a.get(i));
-                push(o);
-              } else if (a.type==ARRAY && b.type==ARRAY) {
-                for (Poppable p : a.a) {
-                  b.a.add(p.copy());
-                }
-                push(b);
+            } else if (a.type==ARRAY && b.type!=ARRAY) {
+              ArrayList<Poppable> o = ea();
+              o.add(b);
+              for (int i = 0; i < a.a.size(); i++)
+                o.add(a.a.get(i));
+              push(o);
+            } else if (a.type==ARRAY && b.type==ARRAY) {
+              for (Poppable p : a.a) {
+                b.a.add(p.copy());
               }
+              push(b);
             }
           }
           if (cc==",") push(sI());
@@ -2629,19 +2601,18 @@ class Executable extends Preprocessable {
           if (cc=="∙") {
             a = pop(STRING);
             b = pop(a.type==BIGDECIMAL? STRING : BIGDECIMAL);
-            if (((a.type==BIGDECIMAL)&&(b.type==STRING))||((a.type==ARRAY)&&(b.type==BIGDECIMAL))) {
+            if (((a.type==BIGDECIMAL)&&(b.type==STRING)) || ((a.type==ARRAY)&&(b.type==BIGDECIMAL))) {
               Poppable t = a;
               a = b;
               b = t;
             }
-            if ((a.type==BIGDECIMAL)&&(b.type==ARRAY)) {
-              ArrayList<Poppable> out = new ArrayList<Poppable>();
+            if (a.type==BIGDECIMAL && b.type==ARRAY) {
+              ArrayList<Poppable> out = ea();
               for (int i = 0; i < b.a.size()*a.bd.longValue(); i++) {
-                out.set(i,a.a.get(i%a.a.size()));
+                out.add(b.a.get(i%b.a.size()));
               }
               push(out);
-            }
-            if ((a.type==STRING)&&(b.type==BIGDECIMAL)) {
+            } else if (a.type==STRING && b.type==BIGDECIMAL) {
               ArrayList<Poppable> out = ea();
               for (int i = 0; i < b.bd.intValue(); i++) {
                 out.add(a);
