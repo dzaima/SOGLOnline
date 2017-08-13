@@ -1801,8 +1801,8 @@ class Executable extends Preprocessable {
           }
   
           if (cc=="+") {
-            b = pop(BIGDECIMAL);
-            a = pop(b.type);
+            a = pop(BIGDECIMAL);
+            b = pop(b.type);
             if (a.type==BIGDECIMAL&b.type==BIGDECIMAL)push(a.bd.add(b.bd)); 
             else if ((a.type==BIGDECIMAL|a.type==STRING)&(b.type==BIGDECIMAL|b.type==STRING)) push(b.s+a.s);
             else if (a.type!=ARRAY && b.type==ARRAY) {
