@@ -3458,6 +3458,22 @@ class Executable extends Preprocessable {
               }
               push(spacesquared(out));
             }
+            if (a.type==ARRAY) {
+              int maxLen = 0;
+              for (Poppable p : a.a) {
+                if (p.s.length() > maxLen) maxLen = p.s.length();
+              }
+              ArrayList<Poppable> out = ea();
+              for (Poppable p : a.a) {
+                String cl = p.s;
+                while (cl.length() < maxLen) {
+                  if (cl.length() + 1 == maxLen) cl+= " ";
+                  else cl = " "+ cl +" ";
+                }
+                out.add(tp(cl));
+              }
+              push(out);
+            }
           }
           
           if (cc=="╝") {
@@ -3984,7 +4000,7 @@ class Preprocessable {
           loopStack.remove(loopStack.size()-1);
           ldata[temp] = i;
         } else {
-          ldata[i]=0;
+          return preprocess("{"+p, inputs);
         }
       }
     }
