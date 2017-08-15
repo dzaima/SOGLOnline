@@ -2071,8 +2071,8 @@ class Executable extends Preprocessable {
             if (a.type==BIGDECIMAL) push (char(a.bd.intValue())+"");
             ArrayList<Poppable> res = ea();
             if (a.type==STRING) {
-              for (int i = 0; i < a.s.length(); i++)
-                res.add(tp(B(a.s.charAt(i)+0)));
+              for (char c : a.s.toCharArray())
+                res.add(tp(B((int)c)));
               push(res);
             }
           }
