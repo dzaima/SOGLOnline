@@ -2077,6 +2077,24 @@ class Executable extends Preprocessable {
             }
           }
           
+          if (cc=="S") {
+            a = pop(STRING);
+            push (vectorize(a,
+              new Vo() {
+                public Poppable e(Poppable p) {
+                  if (p.type!=ARRAY) {
+                    String o = "";
+                    for (int i = 0; i < p.s.length(); i++) {
+                      String c = p.s.charAt(i)+"";
+                      if (c.toUpperCase().equals(c)) o+= c.toLowerCase();
+                      else o+= c.toUpperCase();
+                    }
+                    return tp(o);
+                  }
+                  return null;
+                }
+            }));
+          }
           if (cc=="T") {
             output(false, true, true);
           }

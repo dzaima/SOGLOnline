@@ -150,7 +150,7 @@ class Preprocessable {
           loopStack.remove(loopStack.size()-1);
           ldata[temp] = i;
         } else {
-          ldata[i]=0;
+          return preprocess("{"+p, inputs);
         }
       }
     }
