@@ -231,7 +231,7 @@ String readFile(String path, Charset encoding) {
 ArrayList<Poppable> chop (Poppable p) {
   ArrayList<Poppable> o = new ArrayList<Poppable>();
   for (int i = 0; i < p.s.length(); i++)
-    o.add(new Poppable(p.s.charAt(i)+""));
+    o.add(tp(p.s.charAt(i)+""));
   return o;
 }
 int getLongestXFrom (Poppable inp) {

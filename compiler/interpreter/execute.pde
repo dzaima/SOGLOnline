@@ -2256,12 +2256,12 @@ class Executable extends Preprocessable {
           
           if (cc=='►') {
             a = pop(ARRAY);
-            Poppable l = a.a.get(0);//last
             BigDecimal count = B(0);
             ArrayList<Poppable> out = new ArrayList<Poppable>();
             if (a.type != ARRAY) {
               a.a = chop(a);
             }
+            Poppable l = a.a.get(0);//last
             for (Poppable c : a.a) {
               if (c.equals(l) || c == a.a.get(0)) {
                 count = count.add(B(1));

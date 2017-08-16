@@ -422,7 +422,7 @@ String loadString(String path, Charset encoding) {
 ArrayList<Poppable> chop (Poppable p) {
   ArrayList<Poppable> o = new ArrayList<Poppable>();
   for (int i = 0; i < p.s.length(); i++)
-    o.add(new Poppable(p.s.charAt(i)+""));
+    o.add(tp(p.s.charAt(i)+""));
   return o;
 }
 int getLongestXFrom (Poppable inp) {
@@ -573,7 +573,6 @@ String[] writeExc (String[] a, int xp, int yp, Poppable b, int excludable) {
       a = SAspacesquared(a);
     }
     char matchchar = iTC(abs(excludable));
-    console.log(matchchar);
     for (int x = 0; x < getLongestXFrom(b); x++) {
       for (int y = 0; y < b.a.size(); y++) {
         if (excludable>0? b.a.get(y).s.charAt(x) != matchchar : a[y+yp-1].charAt(x+xp-1) == matchchar)
@@ -3380,7 +3379,7 @@ class Executable extends Preprocessable {
               res = write(res, 1, 1, a);
               if (ctc!="<") res = writeExc(res, x, y, b, ctc=="6"? "~".charCodeAt(0) : " ".charCodeAt(0));
               else res = writeExc(res, x, y, b, -" ".charCodeAt(0));
-              //*/ < needed; Go home, Processing. You're drunk.
+              //*/ this << is needed; Go home, Processing. You're drunk.
               push(res);
             } else if (ctc == "7") {
               a = pop(STRING);
@@ -3529,12 +3528,12 @@ class Executable extends Preprocessable {
           
           if (cc=="►") {
             a = pop(ARRAY);
-            Poppable l = a.a.get(0);//last
             BigDecimal count = B(0);
             ArrayList<Poppable> out = new ArrayList<Poppable>();
             if (a.type != ARRAY) {
               a.a = chop(a);
             }
+            Poppable l = a.a.get(0);//last
             for (Poppable c : a.a) {
               if (c.equals(l) || c == a.a.get(0)) {
                 count = count.add(B(1));
