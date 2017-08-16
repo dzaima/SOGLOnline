@@ -72,7 +72,9 @@ String process (String s) {
     s = s.replace("e.printStackTrace();", "");
   }
   return s.replaceAll("([a-z_]+) instanceof Integer","$1 === parseInt($1)")
-          .replaceAll("-'(\\\\?.)'", ".charCodeAt(0)-'$1'.charCodeAt(0)")
+          .replaceAll("([^, \\d] *)- *'(\\\\?.)'", "$1.charCodeAt(0)-'$2'.charCodeAt(0)")
+          .replaceAll("/\\*\\*/'(\\\\?.)'","\"$1\".charCodeAt(0)")
+          .replace("runningP5", "true")
           .replace("readFromArg = false;", "readFromArg = true;")
           .replace("push(a.s.length() > 0? a.s.charAt(0) : 0);", "push(a.s.length() > 0? a.s.charAt(0).charCodeAt(0) : 0);")
           .replace("RMP5*/","")

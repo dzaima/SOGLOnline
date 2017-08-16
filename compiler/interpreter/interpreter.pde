@@ -335,7 +335,7 @@ String[] write(String[] a, int xp, int yp, Poppable b) {
   return a;
 }
 
-String[] writeExc (String[] a, int xp, int yp, Poppable b, char excludable) {
+String[] writeExc (String[] a, int xp, int yp, Poppable b, int excludable) {
   if ((b.type==ARRAY? b.a.size() : b.s.length()) > 0) {
     a = SAspacesquared(a);
     if (b.type != ARRAY) {
@@ -381,9 +381,10 @@ String[] writeExc (String[] a, int xp, int yp, Poppable b, char excludable) {
       a = na;
       a = SAspacesquared(a);
     }
+    char matchchar = iTC(abs(excludable));
     for (int x = 0; x < getLongestXFrom(b); x++) {
       for (int y = 0; y < b.a.size(); y++) {
-        if (b.a.get(y).s.charAt(x) != excludable)
+        if (excludable>0? b.a.get(y).s.charAt(x) != matchchar : a[y+yp-1].charAt(x+xp-1) == matchchar)
           a[y+yp-1] = a[y+yp-1].substring(0, x+xp-1) + b.a.get(y).s.charAt(x) + a[y+yp-1].substring(x+xp);
       }
     }

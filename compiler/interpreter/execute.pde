@@ -2083,7 +2083,7 @@ class Executable extends Preprocessable {
               res = write(res, 1, 1, a);
               res = write(res, a.a.size()==0? 1 : b.a.get(0).s.length(), 1, b);
               push(res);
-            } else if (ctc == '5' || ctc == '6' || ctc == '8') {
+            } else if (ctc == '5' || ctc == '6' || ctc == '8' || ctc == '<') {
               int x,y;
               if (ctc != '8') {
                 Poppable d = pop(BIGDECIMAL);
@@ -2105,7 +2105,9 @@ class Executable extends Preprocessable {
               }
               String[] res = {};//emptySA(max(axs, dxs+x-1), max(ays, dys+y-1));
               res = write(res, 1, 1, a);
-              res = writeExc(res, x, y, b, ctc=='6'? '~' : ' ');
+              if (ctc!='<') res = writeExc(res, x, y, b, ctc=='6'? /**/'~' : /**/' ');
+              else res = writeExc(res, x, y, b, -/**/' ');
+              //*/ this << is needed; Go home, Processing. You're drunk.
               push(res);
             } else if (ctc == '7') {
               a = pop(STRING);

@@ -58,11 +58,11 @@ $    1          0            0              0         0          10000
 5 like ž, but doesn't override with spaces
 6 like ž, but doesn't override with tildes
 7 pad with spaces, reverse and swap chars
-8 overlap (like the 5 here, but with coords set to 1;1)
+8 overlap (like the `╬5`, but with coords set to 1;1)
 9 reverse in both ways, mirroring X
 : reverse in both ways, mirroring Y
 ; reverse in both ways, mirroring X & Y
-< 
+< like ž, but only override spaces
 = 
 > 
 ? 
