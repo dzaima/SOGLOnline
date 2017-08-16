@@ -1,5 +1,5 @@
-import java.util.Arrays; //<>//
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>//
+import java.util.Arrays; //<>// //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
@@ -1570,11 +1570,7 @@ class Executable extends Preprocessable {
           if (cc=="±") {
             a = pop(STRING);
             if (a.type==STRING) {
-              String res = "";
-              for (int i = a.s.length()-1; i > -1; i--) {
-                res += a.s.charAt(i);
-              }
-              push(res);
+              push(reverse(a.s));
             } else if (a.type==BIGDECIMAL) {
               push (BigDecimal.ZERO.subtract(a.bd));
             } else if (a.type==ARRAY) {
@@ -1582,11 +1578,7 @@ class Executable extends Preprocessable {
               for (int j = 0; j < a.a.size(); j++) {
                 b = a.a.get(j);
                 if (b.type==STRING) {
-                  String res = "";
-                  for (int i = b.s.length()-1; i > -1; i--) {
-                    res += b.s.charAt(i);
-                  }
-                  b = tp(res);
+                  b = tp(reverse(b.s));
                 } else if (a.type==BIGDECIMAL) {
                   b = tp(ZERO.subtract(a.bd));
                 }
@@ -1607,6 +1599,7 @@ class Executable extends Preprocessable {
               b = t;
               useStrings = true;
             }
+            a = to2DList(a);
             for (Poppable c : a.a) {
               if (c.type!=BIGDECIMAL) {
                 useStrings = true;
@@ -1658,6 +1651,15 @@ class Executable extends Preprocessable {
           
           if (cc=="‽") {
             if (truthy(pop(BIGDECIMAL))) ptr=ldata[ptr];
+          }
+          
+          if (cc=="§") {
+            ArrayList<Poppable> aa = spacesquared(to2DList(pop()).a);
+            ArrayList<Poppable> out = ea();
+            for (Poppable c : aa) {
+              out.add(tp(reverse(c.s)));
+            }
+            push(out);
           }
           
           if (cc=="¦") {
@@ -3100,14 +3102,7 @@ class Executable extends Preprocessable {
                 s[i] = a.s.charAt(i)+"";
               push(s);
             } else if (a.type == ARRAY) {
-              String o = "";
-              for (Poppable c : a.a) {
-                if (c.type!=ARRAY)
-                  o+=c.s+"\n";
-                else
-                  o+=c.sline(false)+"\n";
-              }
-              push(o.endsWith("\n")? o.substring(0, o.length()-1) : o);
+              push(artToString(a));
             }
           }
           
@@ -4579,6 +4574,44 @@ Poppable sort(Poppable ts) {
     return tp(out);
   }
 }
+
+Poppable to2DList (Poppable inp) {
+  if (inp.type != ARRAY) return SA2PA(split(inp.s, "\n"));
+  ArrayList<Poppable> out = ea();
+  for (Poppable c : inp.a) {
+    out.add(tp(joinTogether(c)));
+  }
+  return tp(out);
+}
+String reverse (String s) {
+  String res = "";
+  for (int i =s.length()-1; i > -1; i--) {
+    res += s.charAt(i);
+  }
+  return res; 
+}
+String artToString (Poppable arr) {
+  arr = to2DList(arr);
+  String o = "";
+  for (Poppable c : arr.a) {
+    if (c.type==ARRAY)
+      o+= joinTogether(c);
+    else
+      o+=c.s;
+    if (c != arr.a.get(arr.a.size()-1)) o+= "\n";
+  }
+  return o;
+}
+
+String joinTogether (Poppable inp) {
+  if (inp.type!=ARRAY) return inp.s;
+  String cl = "";
+  for (Poppable c : inp.a) {
+    cl+= joinTogether(c);
+  }
+  return cl;
+}
+
 /* template for vectorizing functions
 Poppable vf (Poppable inp) {
   if (inp.type==STRING) 

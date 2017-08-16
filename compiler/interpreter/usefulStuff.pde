@@ -303,6 +303,44 @@ Poppable sort(Poppable ts) {
     return tp(out);
   }
 }
+
+Poppable to2DList (Poppable inp) {
+  if (inp.type != ARRAY) return SA2PA(split(inp.s, '\n'));
+  ArrayList<Poppable> out = ea();
+  for (Poppable c : inp.a) {
+    out.add(tp(joinTogether(c)));
+  }
+  return tp(out);
+}
+String reverse (String s) {
+  String res = "";
+  for (int i =s.length()-1; i > -1; i--) {
+    res += s.charAt(i);
+  }
+  return res; 
+}
+String artToString (Poppable arr) {
+  arr = to2DList(arr);
+  String o = "";
+  for (Poppable c : arr.a) {
+    if (c.type==ARRAY)
+      o+= joinTogether(c);
+    else
+      o+=c.s;
+    if (c != arr.a.get(arr.a.size()-1)) o+= "\n";
+  }
+  return o;
+}
+
+String joinTogether (Poppable inp) {
+  if (inp.type!=ARRAY) return inp.s;
+  String cl = "";
+  for (Poppable c : inp.a) {
+    cl+= joinTogether(c);
+  }
+  return cl;
+}
+
 /* template for vectorizing functions
 Poppable vf (Poppable inp) {
   if (inp.type==STRING) 

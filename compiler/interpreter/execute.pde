@@ -299,11 +299,7 @@ class Executable extends Preprocessable {
           if (cc=='±') {
             a = pop(STRING);
             if (a.type==STRING) {
-              String res = "";
-              for (int i = a.s.length()-1; i > -1; i--) {
-                res += a.s.charAt(i);
-              }
-              push(res);
+              push(reverse(a.s));
             } else if (a.type==BIGDECIMAL) {
               push (BigDecimal.ZERO.subtract(a.bd));
             } else if (a.type==ARRAY) {
@@ -311,11 +307,7 @@ class Executable extends Preprocessable {
               for (int j = 0; j < a.a.size(); j++) {
                 b = a.a.get(j);
                 if (b.type==STRING) {
-                  String res = "";
-                  for (int i = b.s.length()-1; i > -1; i--) {
-                    res += b.s.charAt(i);
-                  }
-                  b = tp(res);
+                  b = tp(reverse(b.s));
                 } else if (a.type==BIGDECIMAL) {
                   b = tp(ZERO.subtract(a.bd));
                 }
@@ -336,6 +328,7 @@ class Executable extends Preprocessable {
               b = t;
               useStrings = true;
             }
+            a = to2DList(a);
             for (Poppable c : a.a) {
               if (c.type!=BIGDECIMAL) {
                 useStrings = true;
@@ -387,6 +380,15 @@ class Executable extends Preprocessable {
           
           if (cc=='‽') {
             if (truthy(pop(BIGDECIMAL))) ptr=ldata[ptr];
+          }
+          
+          if (cc=='§') {
+            ArrayList<Poppable> aa = spacesquared(to2DList(pop()).a);
+            ArrayList<Poppable> out = ea();
+            for (Poppable c : aa) {
+              out.add(tp(reverse(c.s)));
+            }
+            push(out);
           }
           
           if (cc=='¦') {
@@ -1829,14 +1831,7 @@ class Executable extends Preprocessable {
                 s[i] = a.s.charAt(i)+"";
               push(s);
             } else if (a.type == ARRAY) {
-              String o = "";
-              for (Poppable c : a.a) {
-                if (c.type!=ARRAY)
-                  o+=c.s+"\n";
-                else
-                  o+=c.sline(false)+"\n";
-              }
-              push(o.endsWith("\n")? o.substring(0, o.length()-1) : o);
+              push(artToString(a));
             }
           }
           
