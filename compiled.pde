@@ -2071,7 +2071,7 @@ class Executable extends Preprocessable {
           
           if (cc=="R") {
             a = pop(BIGDECIMAL);
-            if (a.type==BIGDECIMAL) push (char(a.bd.intValue())+"");
+            if (a.type==BIGDECIMAL) push (iTC(a.bd.intValue())+"");
             ArrayList<Poppable> res = ea();
             if (a.type==STRING) {
               for (char c : a.s.toCharArray())
@@ -4278,7 +4278,6 @@ char iTC (int c) {
   //*/
   return (char)c;
 }
-
 Poppable spaceup (Poppable p, int l) {
   if (p.type == ARRAY) {
     while (p.a.size()<l)

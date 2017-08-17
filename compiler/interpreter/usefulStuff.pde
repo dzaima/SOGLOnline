@@ -4,7 +4,6 @@ char iTC (int c) {
   //*/
   return (char)c;
 }
-
 Poppable spaceup (Poppable p, int l) {
   if (p.type == ARRAY) {
     while (p.a.size()<l)
