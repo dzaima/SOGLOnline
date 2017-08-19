@@ -428,6 +428,13 @@ class Executable extends Preprocessable {
           
           if (cc=='№') {
             a = pop(STRING);
+            if (a.type==BIGDECIMAL) {
+              BigDecimal res = BigDecimal.ONE;
+              for (BigDecimal i = BigDecimal.ONE; i.compareTo(a.bd) <= 0; i = i.add(BigDecimal.ONE)) {
+                res = res.multiply(i);
+              }
+              push(res);
+            }
             if (a.type==STRING) {
               String[] t = split(a.s, '\n');
               String[] out = new String[t.length];
