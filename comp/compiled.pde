@@ -1930,7 +1930,7 @@ class Executable extends Preprocessable {
               int lvl = 1;
               while (lvl != 0) {
                 cptr--;
-                if (ldata[cptr]!= 0) {
+                if (ldata[cptr] != 0 && "{∫⌡⌠".indexOf(p.charAt(cptr)) != -1) {
                   if (p.charAt(cptr) == "}") lvl++;
                   else lvl--;
                 }
@@ -2218,7 +2218,7 @@ class Executable extends Preprocessable {
               int lvl = 1;
               while (lvl != 0) {
                 cptr--;
-                if (ldata[cptr]!= 0) {
+                if (ldata[cptr]!= 0 && "{∫⌡⌠".indexOf(p.charAt(cptr)) != -1) {
                   if (p.charAt(cptr) == "}") lvl++;
                   else lvl--;
                 }
@@ -2232,7 +2232,7 @@ class Executable extends Preprocessable {
                 int lvl = 1;
                 while (lvl != 0) {
                   cptr--;
-                  if (ldata[cptr]!= 0) {
+                  if (ldata[cptr]!= 0 && "{∫⌡⌠".indexOf(p.charAt(cptr)) != -1) {
                     if (p.charAt(cptr) == "}") lvl++;
                     else lvl--;
                   }
