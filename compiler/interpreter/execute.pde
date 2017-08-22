@@ -1384,7 +1384,25 @@ class Executable extends Preprocessable {
           
           if (cc=='⁽') {
             a = pop(STRING);
-            push((a.s.charAt(0)+"").toUpperCase()+a.s.substring(1));
+            if (a.type==STRING) {
+              push((a.s.charAt(0)+"").toUpperCase()+a.s.substring(1));
+            }
+            if (a.type==ARRAY) {
+              ArrayList<Poppable> out = new ArrayList<Poppable>();
+              for (int j = 0; j < a.a.size(); j++) {
+                if (a.a.get(j).type==STRING) {
+                  String s = a.a.get(j).s;
+                  s = (s.charAt(0)+"").toUpperCase()+s.substring(1);
+                  out.add(tp(s));
+                } else {
+                  out.add(tp(a.a.get(j).bd.add(B(2))));
+                }
+              }
+              push(out);
+            }
+            if (a.type==BIGDECIMAL) {
+              push(a.bd.add(B(2)));
+            }
           }
           
           if (cc=='⁾') {
@@ -1420,10 +1438,13 @@ class Executable extends Preprocessable {
                   }
                   out.add(tp(s));
                 } else {
-                  out.add(a.a.get(j));
+                  out.add(tp(a.a.get(j).bd.subtract(B(2))));
                 }
               }
               push(out);
+            }
+            if (a.type==BIGDECIMAL) {
+              push(a.bd.subtract(B(2)));
             }
           }
           
