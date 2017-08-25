@@ -57,6 +57,33 @@ void setup() {
         saveStrings(outF+"/comp/"+cFile.getName(), fo);
       }
     }
+    //compressor
+    writableFiles = "";
+    mainPDE = "";
+    inF = dataPath("../compression");//input folder
+    outF = dataPath("../../compression");//output folder
+    println("Compression input path: " + inF);
+    println("Compression output path: " + outF);
+    folder = new File(inF+"/data");
+    listOfFiles = folder.listFiles();
+    for (int i = 0; i < listOfFiles.length; i++) {
+      if (listOfFiles[i].isFile()) {
+        writableFiles+= "  if (name.equals(\""+escape(listOfFiles[i].getName())+"\")) out = \""+escape(new String(loadBytes(listOfFiles[i]), StandardCharsets.UTF_8))+"\";\n";
+        println("writing file for " + listOfFiles[i].getName());
+      }
+    }
+    println("written files");
+    folder = new File(inF);
+    listOfFiles = folder.listFiles();
+    for (int i = 0; i < listOfFiles.length; i++) {
+      if (listOfFiles[i].isFile() && listOfFiles[i].getName().endsWith(".pde"))
+        mainPDE+= process(new String(loadBytes(listOfFiles[i]), StandardCharsets.UTF_8)+"\n\n");
+      println("added "+ listOfFiles[i].getName());
+    }
+    mainPDE = mainPDE.replace("//insert", writableFiles);
+    println("written additions");
+    saveStrings(outF+"/compiled.pde", new String[]{mainPDE});
+    println("Saved compiled.pde");
   } catch (Exception e) {
     System.err.println("Error: ");
     e.printStackTrace();

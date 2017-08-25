@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<head>
+  <link rel="stylesheet" href="style.css">
+</head>
+<html>
+<head>
+    <title>SOGL compression</title>
+    <script src="processing.js"></script>
+    <script src="bigDecimal.js"></script>
+</head>
+<body style="background: #f5fff5;">
+  <canvas data-processing-sources="compiled.pde" height=1 width=1 hidden></canvas>
+  <!--comment-->
+  <div>
+    <button id="num" onclick="numSel()">number</button>
+    <button id="str" onclick="strSel()">string</button>
+    <br>
+    <textarea id="strc" spellcheck=false placeholder="on each line write a part of the string (use alt+enter to use a literal newline)"></textarea>
+    <input id="numc" spellcheck=false placeholder="enter number" hidden />
+    <br>
+    <button onclick="compress()">compress</button>
+    <br>
+    <pre><input id="result" value="resulting program will be here" style="width:98%"/></pre>
+    <br>
+    <textarea id="logarea" readonly></textarea>
+  </div>
+  <script>
+    var cp;
+    var mode = 1;
+    logsv = "";
+    
+    function numSel() {
+      mode = 0;
+      strc.hidden = true;
+      numc.hidden = false;
+    }
+    
+    function strSel() {
+      mode = 1;
+      strc.hidden = false;
+      numc.hidden = true;
+    }
+    
+    function compress () {
+      if (!cp) cp = Processing.instances[0];
+      if (mode == 1) {
+        logsv = "";
+        var toc = strc.value;
+        result.value=cp.compressString(toc.split("\n").map((i) => i.replace(/¶/g, "\n")));
+      } else {
+        logsv = "";
+        var toc = numc.value;
+        result.value=cp.compressNumber(toc);
+      }
+      logarea.value=logsv;
+      logarea.scrollTop = logarea.scrollHeight;
+    }
+    function jsmodify(res) {
+      return res;
+    }
+    document.addEventListener ("keydown", e=> {
+      if (e.altKey && e.code === "Enter") {
+        let sp = strc.selectionStart;
+        let ep = strc.selectionEnd;
+        strc.value = strc.value.slice(0, sp)+"¶"+strc.value.slice(ep);
+        strc.selectionStart = strc.selectionEnd = sp+1;
+      }
+    });
+  </script>
+</body>
+</html>
