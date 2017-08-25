@@ -2218,6 +2218,10 @@ class Executable extends Preprocessable {
             push("_");
           }
           
+          if (cc=='╗') {
+            push("+");
+          }
+          
           if (cc=='╚') {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL) {
