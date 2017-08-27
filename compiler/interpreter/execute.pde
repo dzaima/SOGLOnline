@@ -2439,7 +2439,10 @@ class Executable extends Preprocessable {
     justOutputted = true;
     Poppable popped;
     if (shouldPop) popped = pop(STRING);
-    else     popped = npop(STRING);
+    else {
+      popped = pop(STRING);
+      push(popped);
+    }
     popped.print(true);
     if (dao) ao = false;
     lastO=cc;
