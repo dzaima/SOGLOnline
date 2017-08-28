@@ -1283,18 +1283,23 @@ class Executable extends Preprocessable {
           if (cc=='√') {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL) {
+              /*RMP5*/
               BigDecimal base = B(0);//B(Math.sqrt(a.bd.doubleValue()));
               BigDecimal currentModifier = a.bd.divide(B(2));
-              while (base.multiply(base).subtract(a.bd).abs().subtract(B(1).movePointLeft(precision)).toString().charAt(0) != '-') {
+              BigDecimal currentPrec = B(10);
+              while (currentPrec.scale()-currentPrec.precision() < precision) {
                 if (base.multiply(base).subtract(a.bd).toString().charAt(0) == '-') {
                   base = base.add(currentModifier);
                 } else {
                   base = base.subtract(currentModifier);
                 }
                 currentModifier = currentModifier.divide(B(2));
-                //println(base, currentModifier);
+                currentPrec = base.multiply(base).subtract(a.bd);
               }
               push(base);
+              /*/
+              push(a.bd.sqrt());
+              //*/
             }
           }
           
