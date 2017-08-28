@@ -127,7 +127,7 @@ class Poppable {
   }
   Poppable copy() {
     if (type==BIGDECIMAL) {
-      return tp(bd);
+      return tp(new BigDecimal(bd.toString()));
     }
     if (type==STRING) {
       return tp(s);

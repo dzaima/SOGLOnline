@@ -17,7 +17,7 @@ void push (Object p) {
       push(new Poppable(B(p?"1":"0")));
     }
     else if (p instanceof BigDecimal) {
-      push(new Poppable(p));
+      push(new Poppable(new BigDecimal(p.toString())));
     } else {
       push(js2P(p));
     }
