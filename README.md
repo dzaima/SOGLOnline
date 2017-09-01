@@ -1,0 +1,3 @@
+# SOGLOnline
+
+This repository is the host for [SOGL](https://github.com/dzaima/SOGL)s [online interpreter](https://dzaima.github.io/SOGLOnline/) and [compressor](https://dzaima.github.io/SOGLOnline/compression/index.html) on GitHub pages. The latest docs are on [the SOGL repository](https://github.com/dzaima/SOGL/blob/master/P5ParserV0_12/data/charDefs.txt) while the latest usable version and some other files are [here](https://github.com/dzaima/SOGLOnline/tree/master/compiler/interpreter).
