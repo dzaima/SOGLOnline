@@ -1600,7 +1600,7 @@ class Executable extends Preprocessable {
               b = t;
               useStrings = true;
             }
-            a = to2DList(a);
+            a = flattenPA(a);
             for (Poppable c : a.a) {
               if (c.type!=BIGDECIMAL) {
                 useStrings = true;
@@ -1608,6 +1608,7 @@ class Executable extends Preprocessable {
               }
             }
             if (useStrings) {
+              a = to2DList(a);
               String o = "";
               for (Poppable c : a.a) {
                 if (c.type!=ARRAY)
@@ -4637,6 +4638,17 @@ Poppable to2DList (Poppable inp) {
   ArrayList<Poppable> out = ea();
   for (Poppable c : inp.a) {
     out.add(tp(joinTogether(c)));
+  }
+  return tp(out);
+}
+Poppable flattenPA (Poppable inp) {
+  if (inp.type != ARRAY) return inp;
+  ArrayList<Poppable> out = ea();
+  for (Poppable c : inp.a) {
+    if (c.type==ARRAY) {
+      for (Poppable c2 : flattenPA(c).a) out.add(c2);
+    } else
+      out.add(c);
   }
   return tp(out);
 }

@@ -328,7 +328,7 @@ class Executable extends Preprocessable {
               b = t;
               useStrings = true;
             }
-            a = to2DList(a);
+            a = flattenPA(a);
             for (Poppable c : a.a) {
               if (c.type!=BIGDECIMAL) {
                 useStrings = true;
@@ -336,6 +336,7 @@ class Executable extends Preprocessable {
               }
             }
             if (useStrings) {
+              a = to2DList(a);
               String o = "";
               for (Poppable c : a.a) {
                 if (c.type!=ARRAY)

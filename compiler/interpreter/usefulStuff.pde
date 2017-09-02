@@ -318,6 +318,17 @@ Poppable to2DList (Poppable inp) {
   }
   return tp(out);
 }
+Poppable flattenPA (Poppable inp) {
+  if (inp.type != ARRAY) return inp;
+  ArrayList<Poppable> out = ea();
+  for (Poppable c : inp.a) {
+    if (c.type==ARRAY) {
+      for (Poppable c2 : flattenPA(c).a) out.add(c2);
+    } else
+      out.add(c);
+  }
+  return tp(out);
+}
 String reverse (String s) {
   String res = "";
   for (int i =s.length()-1; i > -1; i--) {
