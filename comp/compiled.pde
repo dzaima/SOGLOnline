@@ -1292,11 +1292,13 @@ class Executable extends Preprocessable {
     Poppable b = new Poppable (B("0123456789"));
     ptr = -1;
     int lastptr = 0;
+    int repeatCounter = 0;
     while (true) {
+      repeatCounter++;
       /**/
       if (!specifiedScreenRefresh && justOutputted)
          currOutput();
-      else if (sleepBI)
+      else if (sleepBI || repeatCounter%100 == 0)
          sleep(0);
       if (stopProgram) {
         stopProgram = false;
