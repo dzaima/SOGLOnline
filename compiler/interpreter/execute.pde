@@ -1033,7 +1033,7 @@ class Executable extends Preprocessable {
           
           if (cc=='m') {
             b = pop(BIGDECIMAL);
-            a = pop(STRING);
+            a = pop(b.type==BIGDECIMAL? STRING : BIGDECIMAL);
             if (b.type==STRING && a.type==BIGDECIMAL) {
               Poppable t = a;
               a = b;
