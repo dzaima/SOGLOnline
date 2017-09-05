@@ -3366,7 +3366,8 @@ class Executable extends Preprocessable {
           }
           if (cc=="↕") {
             a = pop(STRING);
-            push(vertMirror(a));
+            if (a.type == BIGDECIMAL) push(repeat(" ",a.bd.intValue()));
+            else push(vertMirror(a));
           }
           if (cc=="∆") {
             push(-1);
