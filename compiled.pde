@@ -2771,13 +2771,13 @@ class Executable extends Preprocessable {
           if (cc=="α") {
             Poppable v = new Poppable(vars[0], 0, this);
             a = pop(STRING);
-            if (v.type==BIGDECIMAL && v.bd.equals(ZERO)) v = a;
+            if (v.type==BIGDECIMAL && v.bd.equals(ZERO)) v = new Poppable("");
             if (v.type==ARRAY) v.a.add(a);
-            else if (a.type==STRING || b.type==STRING) {
+            else if (a.type==STRING || v.type==STRING) {
               v.type = STRING;
               v.s+= a.s;
             } else v.bd = v.bd.add(a.bd);
-            setvar(0, a);
+            setvar(0, v);
           }
           
           if (cc=="β") {
