@@ -256,7 +256,9 @@ Poppable reverseStrings (Poppable inp) {
   return tp(out);
 }
 public class Vo {
-  public Poppable e(Poppable inp){return null;}public Vo s(String a, String b){return this;}
+  public Poppable e(Poppable inp){return null;}
+  public Vo s(String a, String b){return this;}
+  public Vo s(String a){return this;}
 }
 Poppable vectorize (Poppable inp, Vo rn) {
   Poppable ce = rn.e(inp);

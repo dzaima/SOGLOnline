@@ -1,5 +1,5 @@
-import java.util.Arrays; //<>// //<>// //<>// //<>//
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>//
+import java.util.Arrays; //<>// //<>// //<>// //<>// //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
@@ -1791,7 +1791,7 @@ class Executable extends Preprocessable {
           if (cc=="*") {
             b = pop(BIGDECIMAL);
             a = pop(BIGDECIMAL);
-            if ((a.type==BIGDECIMAL && b.type==STRING) || (a.type==ARRAY && b.type==BIGDECIMAL)) {
+            if ((a.type==BIGDECIMAL && b.type==STRING) || (a.type==ARRAY && b.type==BIGDECIMAL) || (a.type==ARRAY && b.type==STRING)) {
               Poppable t = a;
               a = b;
               b = t;
@@ -1804,12 +1804,38 @@ class Executable extends Preprocessable {
               }
               push(res);
             }
-            if ((a.type==BIGDECIMAL)&&(b.type==ARRAY)) {
+            if (a.type==BIGDECIMAL && b.type==ARRAY) {
               String rep = "";
               for (int j = 0; j < a.bd.intValue(); j++) {
                 rep+= "$1";
               }
               push(regexReplace(b, "(.+)", rep));
+            }
+            if (a.type==STRING && b.type==ARRAY) {
+              push (vectorize(b,
+                new Vo() {
+                  /*
+                  String a;
+                  public Vo s (String ai){
+                    a = ai;
+                    return this;
+                  }
+                  //*/
+                  public Poppable e(Poppable p) {
+                    if (p.type!=ARRAY) {
+                      String o;
+                      if (p.type == STRING) {
+                        o = p.s + a;
+                      } else {
+                        o = repeat(a, p.bd);
+                      }
+                      return tp(o);
+                    }
+                    return null;
+                  }
+              }
+              /*.s(a.s)//*/
+              ));
             }
           }
   
@@ -3298,6 +3324,9 @@ class Executable extends Preprocessable {
           
           if (cc=="ū") {
             a = pop(STRING);
+            if (a.type==BIGDECIMAL) {
+              push(B(2).pow(a.bd.intValue()));
+            }
             push (vectorize(a,
               new Vo(){
                 public Poppable e(Poppable p) {
@@ -4582,7 +4611,9 @@ Poppable reverseStrings (Poppable inp) {
   return tp(out);
 }
 public class Vo {
-  public Poppable e(Poppable inp){return null;}public Vo s(String a, String b){return this;}
+  public Poppable e(Poppable inp){return null;}
+  public Vo s(String a, String b){return this;}
+  public Vo s(String a){return this;}
 }
 Poppable vectorize (Poppable inp, Vo rn) {
   Poppable ce = rn.e(inp);

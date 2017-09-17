@@ -519,7 +519,7 @@ class Executable extends Preprocessable {
           if (cc=='*') {
             b = pop(BIGDECIMAL);
             a = pop(BIGDECIMAL);
-            if ((a.type==BIGDECIMAL && b.type==STRING) || (a.type==ARRAY && b.type==BIGDECIMAL)) {
+            if ((a.type==BIGDECIMAL && b.type==STRING) || (a.type==ARRAY && b.type==BIGDECIMAL) || (a.type==ARRAY && b.type==STRING)) {
               Poppable t = a;
               a = b;
               b = t;
@@ -532,12 +532,38 @@ class Executable extends Preprocessable {
               }
               push(res);
             }
-            if ((a.type==BIGDECIMAL)&&(b.type==ARRAY)) {
+            if (a.type==BIGDECIMAL && b.type==ARRAY) {
               String rep = "";
               for (int j = 0; j < a.bd.intValue(); j++) {
                 rep+= "$1";
               }
               push(regexReplace(b, "(.+)", rep));
+            }
+            if (a.type==STRING && b.type==ARRAY) {
+              push (vectorize(b,
+                new Vo() {
+                  /*RMP5*/
+                  String a;
+                  public Vo s (String ai){
+                    a = ai;
+                    return this;
+                  }
+                  //*/
+                  public Poppable e(Poppable p) {
+                    if (p.type!=ARRAY) {
+                      String o;
+                      if (p.type == STRING) {
+                        o = p.s + a;
+                      } else {
+                        o = repeat(a, p.bd);
+                      }
+                      return tp(o);
+                    }
+                    return null;
+                  }
+              }
+              /*RMP5*/.s(a.s)//*/
+              ));
             }
           }
   
@@ -2026,6 +2052,9 @@ class Executable extends Preprocessable {
           
           if (cc=='ū') {
             a = pop(STRING);
+            if (a.type==BIGDECIMAL) {
+              push(B(2).pow(a.bd.intValue()));
+            }
             push (vectorize(a,
               new Vo(){
                 public Poppable e(Poppable p) {
