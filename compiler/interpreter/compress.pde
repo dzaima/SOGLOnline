@@ -9,32 +9,51 @@ ArrayList<int[]> compress (String s, boolean clear, int method) {
    */
   if (clear) toCompress = new ArrayList<int[]>();
   //println("###STARTING "+method);
-
-  if (method == 0) {
+  if (method == 0 || method == 4) {
     ArrayList<Character> used = new ArrayList<Character>();
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
-      if (!used.contains(c)) {
+      if (!used.contains(c)) {// && (method != 4 || (c>='a' && c<='z'))
         used.add(c);
       }
     }
-    if (s.length()<36+used.size()) {
-      add(8, 0);
-      add(32, s.length()-4-used.size());
+    boolean useall = false;
+    if (method == 4 && useall) {
+      for (Character c : alphabet) if (!used.contains(c)) used.add(c);
+    }
+    if (method != 4) {
+      if (s.length()<36+used.size()) {
+        add(8, 0);
+        add(32, s.length()-4-used.size());
+      } else {
+        add(8, 7);
+        add(128, s.length()-4-used.size()-32);
+      }
     } else {
-      add(8, 7);
-      add(128, s.length()-4-used.size()-32);
+        add(8, 6);
+        add(8, 1);
+        add(512, s.length()-4-used.size()-32);
     }
     ArrayList<Character> usedS = new ArrayList<Character>();
+
     for (int i = 0; i < compressableChars.length(); i++) {
       Character c = compressableChars.charAt(i);
-      if (used.contains(c))
+      if (used.contains(c))// || (useall && c>='a' && c<= 'z')
         usedS.add(c);
     }
-    add(compressableChars.length(), compressableChars.indexOf(usedS.get(0)));
-    int base = compressableChars.length()-compressableChars.indexOf(usedS.get(0));
-    for (int i = 1; i < usedS.size(); i++) {
-      int cc = compressableChars.indexOf(usedS.get(i))-compressableChars.indexOf(usedS.get(i-1));
+    ArrayList<Character> usedS2 = new ArrayList<Character>();
+    if (method == 4) {
+      for (int i = 0; i < compressableChars.length(); i++) {
+        Character c = compressableChars.charAt(i);
+        if (useall? (used.contains(c) && !(c>='a' && c<='z')) : (used.contains(c) ^ (c>='a' && c<='z')))
+          usedS2.add(c);
+      }
+    } else usedS2 = usedS;
+    println(used,usedS,usedS2, method);
+    add(compressableChars.length(), compressableChars.indexOf(usedS2.get(0)));
+    int base = compressableChars.length()-compressableChars.indexOf(usedS2.get(0));
+    for (int i = 1; i < usedS2.size(); i++) {
+      int cc = compressableChars.indexOf(usedS2.get(i))-compressableChars.indexOf(usedS2.get(i-1));
       add(base, cc-1);
       base -= cc;
     }
@@ -45,7 +64,7 @@ ArrayList<int[]> compress (String s, boolean clear, int method) {
   }
 
 
-  if (method == 1) {
+  else if (method == 1) {
     while (s.length()>0) {
       int length = min(s.length(), 18);
       if (logDecompressInfo) println(length);
@@ -71,10 +90,10 @@ ArrayList<int[]> compress (String s, boolean clear, int method) {
   }
 
 
-  if (method == 2) {
+  else if (method == 2) {
     if (dict == null) dict = loadStrings("words3.0_wiktionary.org-Frequency_lists.txt");
     String[] words = s.split(" ");
-    for (int j = 0; j < words.length/4+(words.length%4>0?1:0); j++) {
+    for (int j = 0; j < floor(words.length/4)+(words.length%4>0?1:0); j++) {
       add(8, 2);
       add(4, min(words.length-j*4, 4)-1);
       for (int i = 0; i < min(words.length-j*4, 4); i++) {
@@ -85,6 +104,7 @@ ArrayList<int[]> compress (String s, boolean clear, int method) {
           id++;
         }
         if (id == dict.length-1) return null;
+        //println("WORD #",word,id,"#");
         if (id < 512) {
           add (2, 0);
           add (512, id);
@@ -99,7 +119,7 @@ ArrayList<int[]> compress (String s, boolean clear, int method) {
   }
 
 
-  if (method == 3) {
+  else if (method == 3) {
     byte[] used = new byte[6];
     String useds = "";
     int uci = 0;//^
@@ -117,11 +137,11 @@ ArrayList<int[]> compress (String s, boolean clear, int method) {
       }
     if (s.length()<34+uci) {
       add(8, 4);
-      add(2, used);
+      addBA(2, used);
       add(32, s.length()-2-uci);
     } else {
       add(8, 5);
-      add(2, used);
+      addBA(2, used);
       add(64, s.length()-34-uci);
     }
     for (int i = 0; i < s.length(); i++) 
@@ -143,11 +163,8 @@ BigInteger toNum (ArrayList<int[]> baseData) {
   return bi;
 }
 String toCmd (ArrayList<int[]> data) {
-  /*try {
-    while (bits.charAt(bits.length()-1)=='0') bits = bits.substring(0, bits.length()-1);
-  } catch(Exception e) {}//it's ok, this means it's just empty :p*/
   String o = "";
-  BigInteger bits = toNum(data);
+  BigInteger bits = toNum(data);//console.log(data.toArray(), bits);
   while (!bits.equals(BI(0))) {
     BigInteger[] temp = bits.divideAndRemainder(BI(compressChars.length()));
     bits = temp[0];
@@ -155,11 +172,9 @@ String toCmd (ArrayList<int[]> data) {
     o+=compressChars.charAt(c&0xFF);
     //println(c&0xFF, compressChars.charAt(c&0xFF));
   }
-  String[] O = {"\""+o+"‘"};
-  saveStrings ("compressed", O);
   return o;
 }
-ArrayList<int[]> compress(String s) {
+ArrayList<int[]> compressSmart(String s) {
   ArrayList<int[]> bc = new ArrayList<int[]>();//best = 0123, bc = because = code
   try {
     ArrayList<int[]> c = compress(s, true, 1);
@@ -186,10 +201,16 @@ ArrayList<int[]> compress(String s) {
       bc = c;
     }
   }catch(Exception e){}
+  try {
+    ArrayList<int[]> c = compress(s, true, 4);
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+      bc = c;
+    }
+  }catch(Exception e){}
   return bc;
 }
 ArrayList<int[]> toCompress;
-void add (int base, byte[] what) {
+void addBA (int base, byte[] what) {
   for (int i = 0; i < what.length; i++) {
     int[] temp = new int[2];
     temp[0] = base;
@@ -198,7 +219,8 @@ void add (int base, byte[] what) {
   }
 }
 void add (int base, int what) {
-  //if (decompressInfo) println("ADDING "+what+"/"+base);
+  //if (logDecompressInfo) println("ADDING "+what+"/"+base);
+  //if (what < 0) console.log(new Error());
   int[] temp = new int[2];
   temp[0] = base;
   temp[1] = what;
@@ -340,7 +362,7 @@ String compressNum(BigInteger inp) {
 //String toCmd1 (BigInteger bits) {
 //  String o = "";
 //  byte[] chars = toBase(compressChars.length(), bits);
-//  for (byte b : chars) {
+//  for (byte b : chars) { //<>// //<>// //<>//
 //    o+= compressChars.charAt(b&0xFF);
 //  }
 //  String[] O = {"\""+o+"‘"};

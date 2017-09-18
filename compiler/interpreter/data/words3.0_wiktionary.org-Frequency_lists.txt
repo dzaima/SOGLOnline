@@ -65472,11 +65472,6 @@ proofe
 respuesta
 restricts
 saken
-sanitarium
-schreckliche
-sentia
-siamo
-siguiendo
 sire's
 stede
 testes
@@ -65494,7 +65489,6 @@ schuhe
 shasta
 shuttleworth
 stanshy
-begrijpt
 beholdeth
 chilliness
 compositors
@@ -65516,7 +65510,65 @@ output
 output.value
 output.value=
 dzaima
+Mr. Xcoder
+Jonathan Allan
+Jenny_mathy
+Erik the Outgolfer
+Arnauld
 Dennis
+Giuseppe
+Neil
+Luis Mendo
+H.PWiz
+Shaggy
+jferard
+miles
+muddyfish
+Mego
+Christopher 2EZ 4RTZ
+PhiNotPi
+El'endia Starman
+Leaky Nun
+K Zhang
+Emigna
+Digital Trauma
+DJMcMayhem
+Joe Z.
+i cri everytim
+totallyhuman
+Lynn
+xnor
+Jonathan Frech
+HyperNeutrino
+Funky Computer Man
+Ramillies
+Laikoni
+Zgarb
+Martin Ender
+Kevin Cruijssen
+Sp3000
+Doorknob
+Helka Homba
+ETHproductions
+Peter Taylor
+isaacg
+Adnan
+edc65
+orlp
+marinus
+primo
+nimi
+feersum
+jimmy23013
+Fatalize
+Optimizer
+flawr
+DavidC
+Conor O'Brien
+Howard
+Alex A.
+Stewie Griffin
+Mego
 lollipop
 59183
 lol
@@ -65524,3 +65576,15 @@ loadString("words3.0_wiktionary.org-Frequency_lists.txt")
 http://v.ht/
 https://codegolf.stackexchange.com/
 https://api.stackexchange.com/2.2/questions/
+(
+)
+[
+]
+"
+cp.
+cp.compressNum(
+cp.compressString([
+])
+cp.B(
+cp.EX()
+cp.EX().pop()

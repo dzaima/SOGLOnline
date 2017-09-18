@@ -371,3 +371,6 @@ Poppable vf (Poppable inp) {
   return tp(out);
 }
 */
+Executable EX() {
+  return currentPrinter;
+}

@@ -7,6 +7,36 @@ int[] presetNums = {0,1,2,3,4,5,6,7,8,9,10,11,12,14,16,18,20,25,36,50,64,75,99,1
 String[] presets = {"0","1","2","3","4","5","6","7","8","9","L","LI","6«","7«","8«","9«","L«","M¼","6²","M»","N¼","M¾","MH","M","MI","N»","N¾","M«","NH","N","NI"};
 char[] alphabet = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 String[] dict;
+String compressNumber(String number) {
+  String out = compressNum(BI(number));
+  currentPrinter.eprint("\ncompressed: "+out);
+  currentPrinter.eprint("\ndecompressed: "+ decompressNum(out));
+  currentPrinter.eprint("\nlength:"+ out.length());
+  return out;
+}
+String compressString(String[] arr) {
+  ArrayList<int[]> bits = new ArrayList<int[]>();
+  String raw = "";
+  for (String s : arr) {
+    for (int[] i : compressSmart(s)) {
+      int[] temp = new int[2];
+      temp[0] = i[0];
+      temp[1] = i[1];
+      bits.add(temp);
+    }
+    raw+=s;
+  }
+  //for (Object a : bits.toArray()) println(((int[])a)[0],((int[])a)[1]);
+  currentPrinter.eprintln("\n||----------------------------------------------------------------------||");
+  currentPrinter.eprintln(toNum(bits)+"");
+  currentPrinter.eprintln(toNum(bits).toString().length()+"");
+  String comp = toCmd(bits);
+  currentPrinter.eprintln("total: \""+decompress(comp)+"\"");
+  currentPrinter.eprintln("||----------------------------------------------------------------------||");
+  currentPrinter.eprintln(comp.length() + " bytes, original was "+raw.length()+" bytes. "+ round(comp.length()*1000f/raw.length())/10 + "% of original length");
+  currentPrinter.eprintln("More precisely, " + Math.log(toNum(bits).doubleValue())/Math.log(compressChars.length()) + " bytes");//.multiply(new BigDecimal(2/log(256))));
+  return "\""+comp+"‘";
+}
 /*RMP5*/
 BigInteger fromBase (int base, byte[] num) {
   BigInteger o = BI(0);

@@ -88,7 +88,9 @@ void setup() {
     System.err.println("Error: ");
     e.printStackTrace();
   }
-  
+  println("updating word file from interpreter");
+  String wordFileName = "words3.0_wiktionary.org-Frequency_lists.txt";
+  saveStrings(dataPath("../compression/data/"+wordFileName), loadStrings(dataPath("../interpreter/data/"+wordFileName)));
   System.exit(0);
 }
 boolean debug = false;
@@ -124,7 +126,7 @@ String process (String s) {
           .replace("new String(sorted)", "join(sorted, \"\")")
           .replace("System.exit(0);", "running = false;")
           .replaceAll("\\.matches\\(\"(([^\"]|\\\\.)+)\"\\)", "\\.match\\(new RegExp\\(\"$1\"\\)\\)!=null")
-          .replace("void setup() {", "void setup(){size(1,1);}void launchSOGLP2() {")
+          .replace("void setup() {", "void setup(){\n  size(1,1);\n  PLoaded();\n}\nvoid launchSOGLP2() {")
           .replaceAll("toCharArray\\(\\)\\) \\{","toCharArray\\(\\)\\) {s=String.fromCharCode(s);")
           .replaceAll("(?!\\.|o)\\b(o?println)\\(\\)", "$1\\(\"\"\\)");
 }
@@ -132,7 +134,7 @@ String le(String path) {
   return new String(loadBytes(dataPath(path)), StandardCharsets.UTF_8);
 }
 String escape (String s) {
-  return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n","\\n");
+  return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n","\\n").replace("\r","");
 }
 String unescape (String s) {
   return s.replace("\\\"","\"").replace("\\\\", "\\");
