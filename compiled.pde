@@ -1839,6 +1839,14 @@ class Executable extends Preprocessable {
             }
           }
           
+          if (cc=="&") {
+            b = pop(BIGDECIMAL);
+            a = pop(BIGDECIMAL);
+            if (truthy(a) && truthy(b)) {
+              push(1);
+            } else push(0);
+          }
+          
           if (cc=="\'") {
             ptr++;
             push(new BigDecimal(decompressNum("'"+p.charAt(ptr))));
