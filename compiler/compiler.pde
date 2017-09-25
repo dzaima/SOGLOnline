@@ -128,6 +128,8 @@ String process (String s) {
           .replaceAll("\\.matches\\(\"(([^\"]|\\\\.)+)\"\\)", "\\.match\\(new RegExp\\(\"$1\"\\)\\)!=null")
           .replace("void setup() {", "void setup(){\n  size(1,1);\n  PLoaded();\n}\nvoid launchSOGLP2() {")
           .replaceAll("toCharArray\\(\\)\\) \\{","toCharArray\\(\\)\\) {s=String.fromCharCode(s);")
+          .replace("/*online false*/", "false;//")
+          .replace("/*online true*/", "true;//")
           .replaceAll("(?!\\.|o)\\b(o?println)\\(\\)", "$1\\(\"\"\\)");
 }
 String le(String path) {

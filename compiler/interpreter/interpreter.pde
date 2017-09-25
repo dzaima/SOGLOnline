@@ -42,13 +42,13 @@ void setup() {
   try {
     if (args == null)
       args = new String[]{"p.sogl"};
-    saveDebugToFile = false;
-    saveOutputToFile = false;
-    logDecompressInfo = false;
-    oldInputSystem = false;
-    getDebugInfo = true;
-    printDebugInfo = true;
-    readFromArg = false;
+    saveDebugToFile = /*online false*/true;
+    saveOutputToFile = /*online false*/true;
+    logDecompressInfo = /*online false*/false;
+    oldInputSystem = /*online false*/false;
+    getDebugInfo = /*online true*/true;
+    printDebugInfo = /*online true*/true;
+    readFromArg = /*online true*/false;
     for (int i=0; i<256; i++) ASCII+=char(i)+"";
     String lines[];
     if (oldInputSystem) {
@@ -82,7 +82,7 @@ void setup() {
     }
   } catch (Exception e) {
       String[]o2={log.join("")};
-      saveStrings("log.txt", o2);
+      saveStrings("r.txt", o2);
     e.printStackTrace();
   }
   System.exit(0);

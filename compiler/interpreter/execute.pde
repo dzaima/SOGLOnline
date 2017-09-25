@@ -1012,6 +1012,12 @@ class Executable extends Preprocessable {
             }
           }
           
+          if (cc=='g') {
+            b = pop(BIGDECIMAL);
+            a = pop(BIGDECIMAL);
+            push(gcd(a.bd,b.bd));
+          }
+          
           if (cc=='h') {
             a = pop(STRING);
             b = pop(a.type);

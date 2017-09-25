@@ -237,13 +237,13 @@ void launchSOGLP2() {
   try {
     if (args == null)
       args = new String[]{"p.sogl"};
-    saveDebugToFile = false;
-    saveOutputToFile = false;
-    logDecompressInfo = false;
-    oldInputSystem = false;
-    getDebugInfo = true;
-    printDebugInfo = true;
-    readFromArg = true;
+    saveDebugToFile = false;//true;
+    saveOutputToFile = false;//true;
+    logDecompressInfo = false;//false;
+    oldInputSystem = false;//false;
+    getDebugInfo = true;//true;
+    printDebugInfo = true;//true;
+    readFromArg = true;//false;
     for (int i=0; i<256; i++) ASCII+=char(i)+"";
     String lines[];
     if (oldInputSystem) {
@@ -277,7 +277,7 @@ void launchSOGLP2() {
     }
   } catch (Exception e) {
       String[]o2={log.join("")};
-      saveStrings("log.txt", o2);
+      saveStrings("r.txt", o2);
     
   }
   running = false;
@@ -2338,6 +2338,12 @@ class Executable extends Preprocessable {
               } catch (Exception e2) {
               }
             }
+          }
+          
+          if (cc=="g") {
+            b = pop(BIGDECIMAL);
+            a = pop(BIGDECIMAL);
+            push(gcd(a.bd,b.bd));
           }
           
           if (cc=="h") {
@@ -4777,6 +4783,11 @@ String joinTogether (Poppable inp) {
     cl+= joinTogether(c);
   }
   return cl;
+}
+BigDecimal gcd(BigDecimal x, BigDecimal y) {
+  if (x.equals(BigDecimal.ZERO)) return y;
+  if (y.equals(BigDecimal.ZERO)) return x;
+  return gcd(y, x.remainder(y));
 }
 
 /* template for vectorizing functions

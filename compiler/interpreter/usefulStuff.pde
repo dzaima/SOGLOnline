@@ -359,6 +359,11 @@ String joinTogether (Poppable inp) {
   }
   return cl;
 }
+BigDecimal gcd(BigDecimal x, BigDecimal y) {
+  if (x.equals(BigDecimal.ZERO)) return y;
+  if (y.equals(BigDecimal.ZERO)) return x;
+  return gcd(y, x.remainder(y));
+}
 
 /* template for vectorizing functions
 Poppable vf (Poppable inp) {
