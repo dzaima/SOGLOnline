@@ -1504,6 +1504,14 @@ class Executable extends Preprocessable {
             }
           }
           
+          if (cc=='‰') {
+            b = pop(BIGDECIMAL);
+            a = pop(BIGDECIMAL);
+            if (a.type==BIGDECIMAL && b.type==BIGDECIMAL) {
+              push (a.bd.subtract(B(1)).remainder(b.bd).add(B(1)));
+            }
+          }
+          
           if (cc=='÷') {
             a = pop(BIGDECIMAL);//5
             b = pop(BIGDECIMAL);//10 = 2
