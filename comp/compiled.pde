@@ -3404,21 +3404,22 @@ class Executable extends Preprocessable {
             a = pop(STRING);
             if (a.type==BIGDECIMAL) {
               push(B(2).pow(a.bd.intValue()));
-            }
-            push (vectorize(a,
-              new Vo(){
-                public Poppable e(Poppable p) {
-                  if (p.type!=ARRAY) {
-                    for (int i = 0; i < p.s.length(); i++) {
-                      if (((i==0? "?" : p.s.charAt(i-1)+"")+p.s.charAt(i)).match(new RegExp("\\W\\w"))!=null) {
-                        p.s = p.s.substring(0, i)+((p.s.charAt(i)+"").toUpperCase())+p.s.substring(i+1);
+            } else {
+              push (vectorize(a,
+                new Vo(){
+                  public Poppable e(Poppable p) {
+                    if (p.type!=ARRAY) {
+                      for (int i = 0; i < p.s.length(); i++) {
+                        if (((i==0? "?" : p.s.charAt(i-1)+"")+p.s.charAt(i)).match(new RegExp("\\W\\w"))!=null) {
+                          p.s = p.s.substring(0, i)+((p.s.charAt(i)+"").toUpperCase())+p.s.substring(i+1);
+                        }
                       }
+                      return tp(p.s);
                     }
-                    return tp(p.s);
+                    return null;
                   }
-                  return null;
-                }
-            }));
+              }));
+            }
           }
           
           if (cc=="ž") {
