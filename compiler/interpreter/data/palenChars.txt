@@ -1,3 +1,4 @@
+ 0 1 1 this is here as a last overload
  Stuff for ╬
  horizontal palendromization:
  overlap  swap chars  pad
