@@ -1,5 +1,5 @@
-import java.util.Arrays; //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
-String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+import java.util.Arrays; //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
+String ALLCHARS = "⁰¹²³⁴⁵⁶⁷⁸\t\n⁹±∑«»æÆø‽§°¦‚‛⁄¡¤№℮½← !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑↓≠≤≥∞√═║─│≡∙∫○׀′¬⁽⁾⅟‰÷╤╥ƨƧαΒβΓγΔδΕεΖζΗηΘθΙιΚκΛλΜμΝνΞξΟοΠπΡρΣσΤτΥυΦφΧχΨψΩωāčēģīķļņōŗšūž¼¾⅓⅔⅛⅜⅝⅞↔↕∆≈┌┐└┘╬┼╔╗╚╝░▒▓█▲►▼◄■□…‼⌠⌡¶→“”‘’"; //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>// //<>//
 //numbers         │xxxxxxx  | |x xxxxxxxx  x   x   xxxx|xxxx x  xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx x xx /x xx|xxx  xxxxxx   xxx  xxxx xx xx xx x   xxx x  x   x        x xxx     xx  xx    /x xxx  xx  x   x  xxxx     xx  x   xxxxxx x xx      xxx xxxx  x   /  x        xx  xxxx│
 //strings         │xxxxxxx  | |x xxxxxxxx     xx   xxxx|xxx  x  xxxxxxxxxxxxxxxxxx x xxxxxxxxx xxxxxxxx x xx /x xx| x   xxxxxx   xxx xxxxx xx  x x  x   x          x    xx    xxx   Dxx   xx xxx x          x    x          //  xx  xxxxxx xx        xxx xxxxxxx   /  x         x   xxx│
 //arrays          │x  xxxx  | |x     xxxx      x     x/|xxx      xxxxxxxxxxxxxxxx     xxxxxxxx   xxxxxx   x   x xx| x x xxxxxx     x  xxx  x   x x  x           x /x           xx         x      x                              x/  xxxxxx xx        xxx xxxxxxx   /  x x x   x     x x│
@@ -965,7 +965,7 @@ String compressNum(BigInteger inp) {
 //String toCmd1 (BigInteger bits) {
 //  String o = "";
 //  byte[] chars = toBase(compressChars.length(), bits);
-//  for (byte b : chars) { //<>// //<>// //<>// //<>//
+//  for (byte b : chars) { //<>// //<>// //<>// //<>// //<>// //<>//
 //    o+= compressChars.charAt(b&0xFF);
 //  }
 //  String[] O = {"\""+o+"‘"};
@@ -3456,7 +3456,7 @@ class Executable extends Preprocessable {
             if (a.type==BIGDECIMAL)
               push (a.bd.multiply(B(1)).divide(B(4)));
             else if (a.type==STRING) {
-              ptr+= 1;
+              ptr++;
               push(p.charAt(ptr)+a.s+p.charAt(ptr));
             } else {
               String[] lns = SArt(a);
@@ -3766,6 +3766,19 @@ class Executable extends Preprocessable {
               }
             }
             push(out);
+          }
+          
+          if (cc=="■") {
+            String res = "";
+            while (true) {
+              ptr++;
+              char ch = p.charAt(ptr);
+              if (ch == "¶") ch = "\n";
+              if (res.length() > 2 && match(ch+"", "[ -~\n]") == null) break;
+              else res+= ch;
+            }
+            ptr--;
+            push(res);
           }
           
           if (cc=="□") {

@@ -2128,7 +2128,7 @@ class Executable extends Preprocessable {
             if (a.type==BIGDECIMAL)
               push (a.bd.multiply(B(1)).divide(B(4)));
             else if (a.type==STRING) {
-              ptr+= 1;
+              ptr++;
               push(p.charAt(ptr)+a.s+p.charAt(ptr));
             } else {
               String[] lns = SArt(a);
@@ -2438,6 +2438,19 @@ class Executable extends Preprocessable {
               }
             }
             push(out);
+          }
+          
+          if (cc=='■') {
+            String res = "";
+            while (true) {
+              ptr++;
+              char ch = p.charAt(ptr);
+              if (ch == '¶') ch = '\n';
+              if (res.length() > 2 && match(ch+"", "[ -~\n]") == null) break;
+              else res+= ch;
+            }
+            ptr--;
+            push(res);
           }
           
           if (cc=='□') {
