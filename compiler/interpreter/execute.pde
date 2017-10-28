@@ -621,11 +621,7 @@ class Executable extends Preprocessable {
             b = pop(BIGDECIMAL);
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL&b.type==BIGDECIMAL) {
-              try {
-                push(a.bd.divide(b.bd));
-              } catch (Exception e) {
-                push(a.bd.divide(b.bd, precision, RoundingMode.FLOOR));
-              }
+              push(divide(a.bd, b.bd));
             }
           }
           
@@ -1504,6 +1500,16 @@ class Executable extends Preprocessable {
             }
           }
           
+          if (cc=='⅟') {
+            a = pop(BIGDECIMAL);
+            if (a.type==BIGDECIMAL) {
+              push(divide(B(1), a.bd));
+            } else {
+              ptr+= 2;
+              push(swapChars(a, p.charAt(ptr-1), p.charAt(ptr)));
+            }
+          }
+          
           if (cc=='‰') {
             b = pop(BIGDECIMAL);
             a = pop(BIGDECIMAL);
@@ -1513,9 +1519,14 @@ class Executable extends Preprocessable {
           }
           
           if (cc=='÷') {
-            a = pop(BIGDECIMAL);//5
-            b = pop(BIGDECIMAL);//10 = 2
-            if (a.type==BIGDECIMAL & b.type==BIGDECIMAL) push (b.bd.divideAndRemainder(a.bd)[0]);
+            b = pop(BIGDECIMAL);
+            if (b.type==BIGDECIMAL) {
+              a = pop(BIGDECIMAL);
+              if (a.type==BIGDECIMAL & b.type==BIGDECIMAL) push (a.bd.divideAndRemainder(b.bd)[0]);
+            } else {
+              ptr+= 2;
+              push(replaceChars(b, p.charAt(ptr-1), p.charAt(ptr)));
+            }
           }
   
           
@@ -2116,23 +2127,44 @@ class Executable extends Preprocessable {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL)
               push (a.bd.multiply(B(1)).divide(B(4)));
+            else if (a.type==STRING) {
+              ptr+= 1;
+              push(p.charAt(ptr)+a.s+p.charAt(ptr));
+            } else {
+              String[] lns = SArt(a);
+              for (int i = 0; i < lns.length; i++) {
+                lns[i] = repeat(" ", lns.length-i-1)+lns[i];
+              }
+              push(lns);
+            }
           }
           
           if (cc=='¾') {
             a = pop(BIGDECIMAL);
             if (a.type==BIGDECIMAL)
               push (a.bd.multiply(B(3)).divide(B(4)));
+            else if (a.type==STRING) {
+              ptr+= 2;
+              push(p.charAt(ptr-1)+a.s+p.charAt(ptr));
+            } else {
+              String[] lns = PA2SA(to2DList(a));
+              for (int i = 0; i < lns.length; i++) {
+                lns[i] = repeat(" ", i)+lns[i];
+              }
+              push(lns);
+            }
           }
           
           if (cc=='⅓') {
-            /*
-            a = pop(STRING);
-            loadFile(a.s);
-            while (!fLoaded) {
-              push(lfCont);
-              fLoaded = false;
+            a = pop(BIGDECIMAL);
+            if (a.type==BIGDECIMAL) {
+              ptr++;
+              ArrayList<Poppable> out = ea();
+              for (int i = 0; i < a.bd.intValue(); i++) {
+                out.add(tp(repeat(" ", i)+p.charAt(ptr)));
+              }
+              push(out);
             }
-            */
           }
           
           if (cc=='↔') {

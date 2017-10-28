@@ -49,8 +49,8 @@ class Preprocessable {
     vars[2] = new Poppable (ea());
     vars[3] = new Poppable (INS);
     vars[4] = new Poppable (INN);
-    char[] skippingChars = {' ', 'Ζ', 'ƨ', 'Ƨ', '╬'};
-    int[] skippingCharsL = { 1,   2,   2,   2,   1 };
+    char[] skippingChars = {' ', 'Ζ', 'ƨ', 'Ƨ'};
+    int[] skippingCharsL = { 1,   2,   1,   2 };
     /*
     SDATA: (string data)
      1 - string ender

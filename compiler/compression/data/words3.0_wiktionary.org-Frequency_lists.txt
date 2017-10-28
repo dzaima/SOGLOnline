@@ -65570,6 +65570,18 @@ Alex A.
 Stewie Griffin
 Mego
 lollipop
+caird coinheringaahing
+!
+?
+.
+..
+...
+..
+
+
+
+
+
 59183
 lol
 loadString("words3.0_wiktionary.org-Frequency_lists.txt")

@@ -89,11 +89,20 @@ Poppable replaceChars (Poppable p, char a, char b) {
     return tp(p.s.replace(a, b));
   }
   if (p.type==BIGDECIMAL) return p;
+  //else if array
   ArrayList<Poppable> out = ea();
   for (Poppable c : p.a) {
     out.add(replaceChars(c, a, b));
   }
   return tp(out);
+}
+
+BigDecimal divide (BigDecimal a, BigDecimal b) {
+  try {
+    return a.divide(b);
+  } catch (Exception e) {
+    return a.divide(b, precision, RoundingMode.HALF_UP);
+  }
 }
 
 Poppable horizMirror (Poppable inp) {
@@ -319,6 +328,12 @@ Poppable to2DList (Poppable inp) {
     out.add(tp(joinTogether(c)));
   }
   return tp(out);
+}
+ArrayList<Poppable> toArt(Poppable inp) {
+  return spacesquared(to2DList(inp).a);
+}
+String[] SArt (Poppable inp) {
+  return PA2SA(tp(toArt(inp)));
 }
 Poppable flattenPA (Poppable inp) {
   if (inp.type != ARRAY) return inp;
