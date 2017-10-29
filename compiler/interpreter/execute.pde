@@ -4,6 +4,7 @@ class Executable extends Preprocessable {
   char lastO = ' ';
   char cc;
   boolean ao;
+  long startMS;
   boolean justOutputted = false;
   Poppable jumpObj;
   Executable (String prog, String[] inputs) {
@@ -16,6 +17,7 @@ class Executable extends Preprocessable {
   }
   
   void execute() {
+    startMS = millis();
     Poppable a = new Poppable (p);
     Poppable b = new Poppable (B("0123456789"));
     ptr = -1;
@@ -174,6 +176,9 @@ class Executable extends Preprocessable {
           }
           if (qdata[ptr]==22) {
             push("1234567890");
+          }
+          if (qdata[ptr]==23) {
+            push(millis()-startMS);
           }
           if (qdata[ptr]==26) {
             push("bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ");
