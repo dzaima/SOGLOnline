@@ -2136,7 +2136,7 @@ class Executable extends Preprocessable {
               ptr++;
               push(p.charAt(ptr)+a.s+p.charAt(ptr));
             } else {
-              String[] lns = SArt(a);
+              String[] lns = PA2SA(to2DList(a));
               for (int i = 0; i < lns.length; i++) {
                 lns[i] = repeat(" ", lns.length-i-1)+lns[i];
               }
