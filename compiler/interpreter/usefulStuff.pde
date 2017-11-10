@@ -4,6 +4,18 @@ char iTC (int c) {
   //*/
   return (char)c;
 }
+String iTS (int c) {
+  /*ADDP5
+    return String.fromCharCode(c);
+  //*/
+  return ""+(char)c;
+}
+int charAtI(String s, int index) {
+  /*ADDP5
+    return s.charCodeAt(index);
+  //*/
+  return s.charAt(index);
+}
 Poppable spaceup (Poppable p, int l) {
   if (p.type == ARRAY) {
     while (p.a.size()<l)

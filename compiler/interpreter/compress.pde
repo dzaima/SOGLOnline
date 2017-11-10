@@ -362,7 +362,7 @@ String compressNum(BigInteger inp) {
 //String toCmd1 (BigInteger bits) {
 //  String o = "";
 //  byte[] chars = toBase(compressChars.length(), bits);
-//  for (byte b : chars) { //<>// //<>// //<>// //<>//
+//  for (byte b : chars) { //<>// //<>// //<>// //<>// //<>// //<>//
 //    o+= compressChars.charAt(b&0xFF);
 //  }
 //  String[] O = {"\""+o+"‘"};

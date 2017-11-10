@@ -1782,6 +1782,12 @@ class Executable extends Preprocessable {
                 out.add(tp(i));
               }
               push(out);
+            } else if (a.type==STRING && b.type==STRING) {
+              ArrayList<Poppable> out = new ArrayList<Poppable>();
+              for (int c = charAtI(a.s, 0); c <= charAtI(b.s, 0); c++) { 
+                out.add(tp(iTS(c)));
+              }
+              push(out);
             }
           }
           
@@ -1792,6 +1798,12 @@ class Executable extends Preprocessable {
               ArrayList<Poppable> out = new ArrayList<Poppable>();
               for (BigDecimal i = a.bd; i.compareTo(b.bd)<0; i = i.add(B(1))) {
                 out.add(tp(i));
+              }
+              push(out);
+            } else if (a.type==STRING && b.type==STRING) {
+              ArrayList<Poppable> out = new ArrayList<Poppable>();
+              for (int c = charAtI(a.s, 0); c < charAtI(b.s, 0); c++) { 
+                out.add(tp(iTS(c)));
               }
               push(out);
             }

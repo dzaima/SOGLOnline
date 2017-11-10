@@ -3110,6 +3110,12 @@ class Executable extends Preprocessable {
                 out.add(tp(i));
               }
               push(out);
+            } else if (a.type==STRING && b.type==STRING) {
+              ArrayList<Poppable> out = new ArrayList<Poppable>();
+              for (int c = charAtI(a.s, 0); c <= charAtI(b.s, 0); c++) { 
+                out.add(tp(iTS(c)));
+              }
+              push(out);
             }
           }
           
@@ -3120,6 +3126,12 @@ class Executable extends Preprocessable {
               ArrayList<Poppable> out = new ArrayList<Poppable>();
               for (BigDecimal i = a.bd; i.compareTo(b.bd)<0; i = i.add(B(1))) {
                 out.add(tp(i));
+              }
+              push(out);
+            } else if (a.type==STRING && b.type==STRING) {
+              ArrayList<Poppable> out = new ArrayList<Poppable>();
+              for (int c = charAtI(a.s, 0); c < charAtI(b.s, 0); c++) { 
+                out.add(tp(iTS(c)));
               }
               push(out);
             }
@@ -4487,6 +4499,18 @@ char iTC (int c) {
     return String.fromCharCode(c);
   //*/
   return (char)c;
+}
+String iTS (int c) {
+  /**/
+    return String.fromCharCode(c);
+  //*/
+  return ""+(char)c;
+}
+int charAtI(String s, int index) {
+  /**/
+    return s.charCodeAt(index);
+  //*/
+  return s.charAt(index);
 }
 Poppable spaceup (Poppable p, int l) {
   if (p.type == ARRAY) {
