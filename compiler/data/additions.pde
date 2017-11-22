@@ -139,7 +139,7 @@ class SystemErr {
   }
   void checkPrint () {
     while (lastConsoleLine.indexOf("\n") >= 0) {
-      console.log(lastConsoleLine.substring(0, lastConsoleLine.indexOf("\n")));
+      if (consoleDebug) console.log(lastConsoleLine.substring(0, lastConsoleLine.indexOf("\n")));
       lastConsoleLine = lastConsoleLine.substring(lastConsoleLine.indexOf("\n")+1);
     }//*/pprint(lastConsoleLine+"<br>");lastConsoleLine="";
   }

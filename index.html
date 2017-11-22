@@ -8,6 +8,7 @@
     <title>SOGL interpreter</title>
     <script src="processing.js"></script>
     <script src="bigDecimal.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body style="background: #f5fff5;">
   <canvas data-processing-sources="compiled.pde" height=1 width=1 hidden></canvas>
@@ -53,6 +54,7 @@
     var lastPremalink;
     var args = location.search.substring(1).split(",");
     var pobj = document.getElementById("program");
+    var consoleDebug = false;
     for (var i = 0; i < args.length; i++) {
       var carg = args[i];
       if (carg.startsWith("code="))
