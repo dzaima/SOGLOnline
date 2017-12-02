@@ -72,13 +72,14 @@
       var inputs = document.getElementById("inputs").value;
       if (inputs != "")
         res+= ",inputs="+ btoa(escape(inputs)).replace(/=/g, "_");
+      res+= ",v=0.12"
       lastPremalink = res;
       document.getElementById("output").value = res;
     }
     function postify() {
       permalink();
       let link = `\n\n[Try it Here!](${output.value})`;
-      output.value = `#[SOGL V0.12](https://github.com/dzaima/SOGL), ${program.value.length} [byte${program.value.length===1? "" : "s"}](https://github.com/dzaima/SOGL/blob/master/chartable.md)`;
+      output.value = `# [SOGL V0.12](https://github.com/dzaima/SOGLOnline), ${program.value.length} [byte${program.value.length===1? "" : "s"}](https://github.com/dzaima/SOGL/blob/master/chartable.md)`;
       for (var cs of program.value.split("\n")) output.value+= "\n    "+cs;
       output.value+= link;
     }
