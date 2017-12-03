@@ -180,6 +180,26 @@ class Executable extends Preprocessable {
           if (qdata[ptr]==23) {
             push(millis()-startMS);
           }
+          if (qdata[ptr]==25) {
+            ArrayList<Poppable> arr = ea();
+            arr.add(tp(B(year())));
+            arr.add(tp(B(month())));
+            arr.add(tp(B(day())));
+            arr.add(tp(B(hour())));
+            arr.add(tp(B(minute())));
+            arr.add(tp(B(second())));
+            /*RMP5*/
+            Calendar C = Calendar.getInstance();
+            arr.add(tp(B((int) C.get(Calendar.MILLISECOND))));
+            arr.add(tp(B((int) C.get(Calendar.DAY_OF_WEEK))));
+            /*ADDP5
+            arr.add(tp(B(new Date().getMilliseconds())));
+            arr.add(tp(B(-1))); // TODO
+            //*/
+            arr.add(tp(B(((hour()+11)%12)+1)));
+            arr.add(tp(B(hour()>11?1:0)));
+            push(tp(arr));
+          }
           if (qdata[ptr]==26) {
             push("bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ");
           }

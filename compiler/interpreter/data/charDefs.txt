@@ -66,7 +66,7 @@ uu 21	push "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 SU 22	push "1234567890"
 Su 23	push seconds since starting
 US 24	push current time as seconds (since epoch)
-uS 25	push an array with time stuff (year, month, day, hour, minute, second, milliscond, weekday, time in 12-hour time, am(= 0)/pm(= 1))
+uS 25	push an array with time stuff (year, month, day, hour, minute, second, milliscond, weekday, hours in 12-hour time, am(= 0)/pm(= 1))
 			`uS` -> [[2017, 5, 2, 16, 0, 2, 747.9, 2, 4, 1]]
 !? 26	pushes a string of consonants ("bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ")
 ²² 27	push "0123456789"
