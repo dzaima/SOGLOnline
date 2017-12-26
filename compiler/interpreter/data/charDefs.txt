@@ -397,7 +397,7 @@ q	1 input
 r	1 input
 		string: convert to number
 			`"123”r` -> 123
-		number: convert to character (inverse of above)
+		number: convert to string (inverse of above)
 		array: vectorize
 s	1 input
 		string: checks if contains multiple cases
@@ -694,11 +694,11 @@ z	pushes the english alphabet lowercase
 ╚	1 input
 		number: get a diagonal (of `/`) of the size of the number
 		string: get a diagonal of the string (starting at the bottom-left corner)
-		array: center the array vertically
+		array: center the array horizontally
 ╝	1 input
 		number: get a diagonal (of `\`) of the size of the number
 		string: get a diagonal of the string (starting at the top-left corner)
-		array: center the array horizontally
+		array: center the array vertically
 ░	clear output
 ▒	refresh output
 ▓	1 input

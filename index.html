@@ -30,6 +30,8 @@
     </div>
       <button id="stop" onclick="stopRunning()" style="width:83px;">stop</button>
       <button id="compmode" onclick="compmode()" style="width:134px;">compatibility mode</button>
+      <button id="topost" onclick="postify()" style="width:80px;">postify</button>
+      <button id="toCMC" onclick="CMCify()" style="width:60px;">CMCify</button>
     <br>
     <div id="p" style="width:220px">
       <input type="button" id="loadSOGL" value="load SOGL codepage encoded file" onclick="loadSOGL()"; style="width:100%"></input>
@@ -37,8 +39,6 @@
     <input type="button" id="saveSOGL" value="save SOGL codepage encoded file" onclick="saveSOGL();" style="width:100%"></input>
     </div>
     <div id="p">
-      <button id="topost" onclick="postify()" style="width:80px;">postify</button>
-      <button id="toCMC" onclick="CMCify()" style="width:60px;">CMCify</button>
       <input type="file" id="fileinput" accept=".soglbin"/>
       <br>
       <input id="debugCheck" type="checkbox" onclick="updateDebugMode()">debug mode</input>
