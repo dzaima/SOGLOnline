@@ -92,7 +92,7 @@ before
 see
 us
 over
-et
+^,
 much
 know
 after
@@ -65571,12 +65571,12 @@ Stewie Griffin
 Mego
 lollipop
 caird coinheringaahing
-!
-?
-.
-..
-...
-
+^!
+^?
+^.
+^..
+^...
+et
 
 
 

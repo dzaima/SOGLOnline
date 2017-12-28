@@ -64,21 +64,22 @@ String decompb(BigInteger inpbi) {
     }
     if (eq==2) {
       if (dict == null) dict = loadStrings("words3.0_wiktionary.org-Frequency_lists.txt");
-      if (last==2 && lastD==4) out+=" ";
       int length = read(4)+1;
-      lastD = length;
       if(logDecompressInfo) System.err.print(length + " english words: \"");
       String tout = "";
       for (int i = 0; i < length; i++) {
+        String word;
         if (read(2)==0) 
-          tout+=dict[readInt(512)];
+          word = dict[readInt(512)];
         else {
-          tout+=dict[readInt(65536)+512];
+          word = dict[readInt(65536)+512];
         }
-        if (i<length-1) tout+=" ";
+        if ((i>0 || last==2 && lastD==4) && word.charAt(0) != '^') tout+=" ";
+        tout+= word.substring(word.charAt(0)=='^'? 1 : 0);
       }
       if(logDecompressInfo) System.err.println(tout+"\".");
       out+=tout;
+      lastD = length;
     }
     if (eq==5 | eq==4) {
       if(logDecompressInfo) System.err.print("boxstring with ");
