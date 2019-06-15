@@ -169,7 +169,7 @@ String pre (String s, int amo, String p) {
 }
 BigDecimal[] toBaseBD (BigDecimal base, BigDecimal b) {
   ArrayList<BigDecimal> o = new ArrayList<BigDecimal>();
-  while (!b.equals(BigInteger.ZERO)) {
+  while (!b.equals(BigDecimal.ZERO)) {
     BigDecimal[] t = b.divideAndRemainder(base);
     o.add(t[1]);
     b = t[0];

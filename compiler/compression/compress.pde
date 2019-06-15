@@ -185,25 +185,25 @@ ArrayList<int[]> compressSmart(String s) {
   //if (box)
   try {
     ArrayList<int[]> c = compress(s, true, 3);
-    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1 || bc.size()==0)) {
       bc = c;
     }
   }catch(Exception e){}
   try {
     ArrayList<int[]> c = compress(s, true, 0);
-    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1 || bc.size()==0)) {
       bc = c;
     }
   }catch(Exception e){}
   try {
     ArrayList<int[]> c = compress(s, true, 2);
-    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1 || bc.size()==0)) {
       bc = c;
     }
   }catch(Exception e){}
   try {
     ArrayList<int[]> c = compress(s, true, 4);
-    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1 || bc.size()==0)) {
       bc = c;
     }
   }catch(Exception e){}

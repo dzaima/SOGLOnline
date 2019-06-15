@@ -7,6 +7,7 @@ String decompress(String s) {
 }
 int pos;
 String decompb(BigInteger inpbi) {
+  if (inpbi.compareTo(BigInteger.ZERO) < 0) throw new Error("invalid input!");
   //println(in);
   pos = 0;
   decompressable = inpbi;

@@ -185,25 +185,25 @@ ArrayList<int[]> compressSmart(String s) {
   //if (box)
   try {
     ArrayList<int[]> c = compress(s, true, 3);
-    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1 || bc.size()==0)) {
       bc = c;
     }
   }catch(Exception e){}
   try {
     ArrayList<int[]> c = compress(s, true, 0);
-    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1 || bc.size()==0)) {
       bc = c;
     }
   }catch(Exception e){}
   try {
     ArrayList<int[]> c = compress(s, true, 2);
-    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1 || bc.size()==0)) {
       bc = c;
     }
   }catch(Exception e){}
   try {
     ArrayList<int[]> c = compress(s, true, 4);
-    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1||bc.equals(""))) {
+    if (s.equals(decompb(toNum(c))) && (toNum(c).compareTo(toNum(bc))==-1 || bc.size()==0)) {
       bc = c;
     }
   }catch(Exception e){}
@@ -547,7 +547,7 @@ String pre (String s, int amo, String p) {
 }
 BigDecimal[] toBaseBD (BigDecimal base, BigDecimal b) {
   ArrayList<BigDecimal> o = new ArrayList<BigDecimal>();
-  while (!b.equals(BigInteger.ZERO)) {
+  while (!b.equals(BigDecimal.ZERO)) {
     BigDecimal[] t = b.divideAndRemainder(base);
     o.add(t[1]);
     b = t[0];
@@ -568,6 +568,7 @@ String decompress(String s) {
 }
 int pos;
 String decompb(BigInteger inpbi) {
+  if (inpbi.compareTo(BigInteger.ZERO) < 0) throw new Error("invalid input!");
   //println(in);
   pos = 0;
   decompressable = inpbi;
